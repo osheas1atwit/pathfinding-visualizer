@@ -13,7 +13,7 @@ public class Main : MonoBehaviour
     void Start()
     {
         // Create world
-        world = new LogicGrid(5, 5, 10f, new Vector3(-100, -30));
+        world = new LogicGrid(5, 5, 10f, new Vector3(-10, -30));
         
         // Set default placement to Obstacle
         placementValue = -1;
