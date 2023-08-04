@@ -416,9 +416,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 11500000, guid: 136a86ba5748a2047b9d38764001c9f8, type: 3}
-        m_TargetAssemblyTypeName: UnityEngine.Object, UnityEngine
-        m_MethodName: 
+      - m_Target: {fileID: 1119505060}
+        m_TargetAssemblyTypeName: ClickButton, Assembly-CSharp
+        m_MethodName: IWasClicked
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
