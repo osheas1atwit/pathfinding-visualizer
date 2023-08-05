@@ -5,9 +5,12 @@ using UnityEngine;
 public class Main : MonoBehaviour
 {
 
+    [SerializeField] private CellMesh cellMesh;
+    
     private LogicGrid world;
     char placementMode;
     int placementValue;
+
 
     // Start is called before the first frame update
     void Start()
@@ -18,6 +21,9 @@ public class Main : MonoBehaviour
         // Set default placement to Obstacle
         placementValue = -1;
         placementMode = 'o';
+
+        cellMesh.SetGrid(world);
+
         Debug.Log("Loaded. Placing Mode: Obstacle");
 
     }

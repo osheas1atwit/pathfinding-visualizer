@@ -53,9 +53,9 @@ public class LogicGrid
 
 
     // Enables us to convert the array's (x,y) pair into the user's world-space (also used to scale grid in constructor)
-    private Vector3 GetWorldPosition(int x, int y)
+    public Vector3 GetWorldPosition(int x, int y)
     {
-        return new Vector3(x, y) * this.cellSize + originPosition;
+        return new Vector3(x, y) * this.cellSize + this.originPosition;
     }
 
     private void getXY(Vector3 worldPosition, out int x, out int y)
@@ -104,4 +104,18 @@ public class LogicGrid
         return GetValue(x, y);
     }
 
+    public int GetHeight()
+    {
+        return this.height;
+    }
+
+    public int GetWidth()
+    {
+        return this.width;
+    }
+
+    public float GetCellSize()
+    {
+        return this.cellSize;
+    }
 }
