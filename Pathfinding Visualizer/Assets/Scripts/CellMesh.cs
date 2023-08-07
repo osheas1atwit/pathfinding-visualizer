@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class CellMesh : MonoBehaviour
 {
-
-    Material m_Material;
-
     private LogicGrid grid;
     private Mesh mesh;
 
@@ -20,11 +17,20 @@ public class CellMesh : MonoBehaviour
     {
         this.grid = grid;
         UpdateCellVisual();
+
+        // Subscribe to event
+        grid.OnGridValueChanged += GridValueChanged;
+    }
+
+    private void GridValueChanged(object sender, LogicGrid.OnGridValueChangedEventArgs e)
+    {
+        Debug.Log("FIRE!!");
+        UpdateCellVisual();
     }
 
     private void UpdateCellVisual()
     {
-        CreateEmptyMeshArrays(grid.GetWidth() * grid.GetHeight(), out Vector3[] vertices, out Vector2[] uv, out int[] triangles);
+        MeshUtils.CreateEmptyMeshArrays(grid.GetWidth() * grid.GetHeight(), out Vector3[] vertices, out Vector2[] uv, out int[] triangles);
 
         for(int x = 0; x < grid.GetWidth(); x++)
             for(int y = 0; y < grid.GetHeight(); y++)
@@ -33,7 +39,12 @@ public class CellMesh : MonoBehaviour
 
                 Vector3 quadSize = new Vector3(1, 1) * grid.GetCellSize();
 
-                AddQuad(vertices, uv, triangles, index, grid.GetWorldPosition(x, y), quadSize, Vector2.zero);
+                int gridValue = grid.GetValue(x, y);
+                float gridValueNormalized = gridValue / 4f;
+                Vector2 gridValueUV = new Vector2(gridValueNormalized, 0f);
+                
+                
+                MeshUtils.AddToMeshArrays(vertices, uv, triangles, index, grid.GetWorldPosition(x, y) + (quadSize * .5f), 0f, quadSize, gridValueUV, gridValueUV);
             }
 
         mesh.vertices = vertices;
@@ -43,55 +54,37 @@ public class CellMesh : MonoBehaviour
 
     void Start()
     {
-        /**
-        m_Material = GetComponent<Renderer>().material;
-
-        Debug.Log("Mesh Testing");
-
-        Mesh mesh = new Mesh();
-
-
-        // Build required data-structures for square mesh
-        Vector3[] vertices = new Vector3[4];
-        Vector2[] uv = new Vector2[4];
-        int[] triangles = new int[6];
-
-        // Set vertices of polygon (2 triangles -> 1 quad)
-        vertices[0] = new Vector3(0, 0);
-        vertices[1] = new Vector3(0, 10);
-        vertices[2] = new Vector3(10, 10);
-        vertices[3] = new Vector3(10, 0);
-
-        // UV index contains texture position that should match to vertex with same index
-        uv[0] = new Vector2(0, 0);
-        uv[1] = new Vector2(0, 1);
-        uv[2] = new Vector2(1, 1);
-        uv[3] = new Vector2(1, 0);
-
-
-        // Set order of indexes of vertices to draw polygon (v1 -> v2 -> v3 -> v1)
-        // Note: always set clockwise, otherwise mesh will be facing backwards
-        triangles[0] = 0;
-        triangles[1] = 1;
-        triangles[2] = 2;
-
-        triangles[3] = 0;
-        triangles[4] = 2;
-        triangles[5] = 3;
-
-        mesh.vertices = vertices;
-        mesh.uv = uv;
-        mesh.triangles = triangles;
-
-        GetComponent<MeshFilter>().mesh = mesh;
-        */
+        
     }
 
-    
 
+    /*                MeshRenderer myRenderer = GetComponent<MeshRenderer>();
+                Material m_material;
+                if (myRenderer != null)
+                {
+                    m_material = myRenderer.material;
+
+                    if(gridValue == -1)
+                    {
+                        m_material.color = Color.black; 
+                    }
+                    if (gridValue == 0)
+                    {
+                        m_material.color = Color.white;
+                    }
+                    if (gridValue == 1)
+                    {
+                        m_material.color = Color.green;
+                    }
+                    if (gridValue == 2)
+                    {
+                        m_material.color = Color.cyan;
+                    }*//*
+                }
+*/
     private void Update()
     {
-        if(Input.GetKeyDown("1"))
+/*        if(Input.GetKeyDown("1"))
         {
             Debug.Log("1");
             m_Material.color = Color.white;
@@ -110,67 +103,6 @@ public class CellMesh : MonoBehaviour
             Debug.Log("3");
             m_Material.color = Color.green;
             //m_Material.SetColor("_Color", Color.white);
-        }
-    }
-
-
-    // CREDIT FOR BELOW FUNCTIONS: CODEMONKEY 
-    // https://www.youtube.com/watch?v=mZzZXfySeFQ
-    public static void CreateEmptyMeshArrays(int quadCount, out Vector3[] vertices, out Vector2[] uvs, out int[] triangles)
-    {
-        vertices = new Vector3[4 * quadCount];
-        uvs = new Vector2[4 * quadCount];
-        triangles = new int[6 * quadCount];
-    }
-
-
-    private void AddQuad(Vector3[] vertices, Vector2[] uvs, int[] triangles, int index, Vector3 GridPos, Vector3 QuadSize, Vector2 Uv)
-    {
-        vertices[index * 4] = new Vector3((-0.5f + GridPos.x) * QuadSize.x, (-0.5f + GridPos.y) * QuadSize.y);
-        vertices[(index * 4) + 1] = new Vector3((-0.5f + GridPos.x) * QuadSize.x, (+0.5f + GridPos.y) * QuadSize.y);
-        vertices[(index * 4) + 2] = new Vector3((+0.5f + GridPos.x) * QuadSize.x, (+0.5f + GridPos.y) * QuadSize.y);
-        vertices[(index * 4) + 3] = new Vector3((+0.5f + GridPos.x) * QuadSize.x, (-0.5f + GridPos.y) * QuadSize.y);
-
-        Debug.Log(vertices[0]);
-        Debug.Log(vertices[1]);
-        Debug.Log(vertices[2]);
-        Debug.Log(vertices[3]);
-
-        uvs[(index * 4)] = Uv;
-        uvs[(index * 4) + 1] = Uv;
-        uvs[(index * 4) + 2] = Uv;
-        uvs[(index * 4) + 3] = Uv;
-
-        triangles[(index * 6) + 0] = (index * 4) + 0;
-        triangles[(index * 6) + 1] = (index * 4) + 1;
-        triangles[(index * 6) + 2] = (index * 4) + 2;
-        triangles[(index * 6) + 3] = (index * 4) + 2;
-        triangles[(index * 6) + 4] = (index * 4) + 3;
-        triangles[(index * 6) + 5] = (index * 4) + 0;
-    }
-
-    /*    private void AddQuad(Vector3[] vertices, Vector2[] uvs, int[] triangles, int index, Vector3 GridPos, Vector3 QuadSize, Vector2 Uv)
-        {
-            vertices[index * 4] = new Vector3((-0.5f + GridPos.x) * QuadSize.x, (-0.5f + GridPos.y) * QuadSize.y);
-            vertices[(index * 4) + 1] = new Vector3((-0.5f + GridPos.x) * QuadSize.x, (+0.5f + GridPos.y) * QuadSize.y);
-            vertices[(index * 4) + 2] = new Vector3((+0.5f + GridPos.x) * QuadSize.x, (+0.5f + GridPos.y) * QuadSize.y);
-            vertices[(index * 4) + 3] = new Vector3((+0.5f + GridPos.x) * QuadSize.x, (-0.5f + GridPos.y) * QuadSize.y);
-
-            Debug.Log(vertices[0]);
-            Debug.Log(vertices[1]);
-            Debug.Log(vertices[2]);
-            Debug.Log(vertices[3]);
-
-            uvs[(index * 4)] = Uv;
-            uvs[(index * 4) + 1] = Uv;
-            uvs[(index * 4) + 2] = Uv;
-            uvs[(index * 4) + 3] = Uv;
-
-            triangles[(index * 6) + 0] = (index * 4) + 0;
-            triangles[(index * 6) + 1] = (index * 4) + 1;
-            triangles[(index * 6) + 2] = (index * 4) + 2;
-            triangles[(index * 6) + 3] = (index * 4) + 2;
-            triangles[(index * 6) + 4] = (index * 4) + 3;
-            triangles[(index * 6) + 5] = (index * 4) + 0;
         }*/
+    }
 }

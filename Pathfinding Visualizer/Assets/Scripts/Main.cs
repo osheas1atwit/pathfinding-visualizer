@@ -38,21 +38,21 @@ public class Main : MonoBehaviour
         {
             Debug.Log("Placing Mode: Agent");
             placementMode = 'a';
-            placementValue = 2;
+            placementValue = 3;
         }
         // Place Sample in grid
         if(Input.GetKeyDown("s"))
         {
             Debug.Log("Placing Mode: Sample");
             placementMode = 's';
-            placementValue = 1;
+            placementValue = 2;
         }
         // Place Obstacle in grid
         if(Input.GetKeyDown("o"))
         {
             Debug.Log("Placing Mode: Obstacle");
             placementMode = 'o';
-            placementValue = -1;
+            placementValue = 1;
         }
 
         

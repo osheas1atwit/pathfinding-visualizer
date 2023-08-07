@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 
 // INSPIRED BY "CODE MONKEY" ON YOUTUBE
@@ -14,9 +15,15 @@ public class LogicGrid
 
     // Actual Grid Array
     private int[,] gridArray;
-
     // Debug Grid Array used for updating the text-objects 
     private TextMesh[,] debugTextArray;
+
+    public event EventHandler<OnGridValueChangedEventArgs> OnGridValueChanged;
+    public class OnGridValueChangedEventArgs : EventArgs
+    {
+        public int x;
+        public int y;
+    }
 
 
 
@@ -83,6 +90,14 @@ public class LogicGrid
 
             // Set the value in our debug mesh so that our Text on-screen gets updated
             debugTextArray[x, y].text = gridArray[x, y].ToString();
+
+            if (OnGridValueChanged != null)
+                OnGridValueChanged(this, new OnGridValueChangedEventArgs
+                {
+                    x = x,
+                    y = y
+                });
+            ;
         }
     }
 
