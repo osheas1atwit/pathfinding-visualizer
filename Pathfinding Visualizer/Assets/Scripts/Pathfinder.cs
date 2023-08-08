@@ -67,6 +67,7 @@ public class Pathfinder
             for(int i = 0; i < result.Count; i++)
             {
                 Node n = result[i];
+                Debug.Log("Agent at: " + n.agent.x + ", " + n.agent.y);
                 Debug.Log(n.lastMove);
             }
         }
@@ -79,9 +80,6 @@ public class Pathfinder
         List<Node> open = new List<Node>();
 
         
-
-        //PriorityQueue<Node> open = new PriorityQueue<Node>();
-
         open.Add(initialState);
         int cap = 1000;
         while (true && cap > 0)
@@ -100,7 +98,6 @@ public class Pathfinder
             {
                 while (currentNode.parent != null)
                 {
-                    Debug.Log("Agent at: " + currentNode.agent.x + ", " + currentNode.agent.y);
                     solution.Add(currentNode);
                     currentNode = currentNode.parent;
                 }
@@ -139,7 +136,7 @@ public class Pathfinder
             sorted.Add(children[i]);
         }
 
-        sorted = sorted.OrderBy(Node => Node.fn).ToList();
+        //sorted = sorted.OrderBy(Node => Node.fn).ToList();
 
         return sorted;
     }

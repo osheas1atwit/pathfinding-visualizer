@@ -99,6 +99,7 @@ using UnityEngine;
 			onSample = CanSample();
 			if (onSample.x == 1)
 			{
+				Debug.Log("SAMPLING");
 				Node child = new Node(this, this.agent, this.samples, 'S', this.distanceTraveled + 1, this.heuristic);
 			
 				child.samples.RemoveAt(onSample.y);
