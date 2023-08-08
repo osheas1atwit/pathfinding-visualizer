@@ -43,7 +43,7 @@ using UnityEngine;
 			int[] onSample = new int[2];
 
 			// since this state is being currently visited (expanded), put in closed list
-			// SampleWorld.closed.add(this.getState());
+			Pathfinder.closed.Add(this.getState());
 
 			////////////////////////////////////
 			// BEGIN CHECKING FOR VALID MOVES //
@@ -115,14 +115,17 @@ using UnityEngine;
 		public bool isOpen(int[] position)
 		{
 			// check that agent is not trying to move into an obstacle
-			for (int i = 0; i < SampleWorld.obstacles.size(); i++)
+			for (int i = 0; i < Pathfinder.obstacles.Count(); i++)
 			{
-				if (Enumerable.SequenceEqual(SampleWorld.obstacles.get(i), position) == 0)
+				int[] coord = new int[2];
+				coord[0] = Pathfinder.obstacles[i][0][0];
+				coord[1] = Pathfinder.obstacles[i][1][0];
+				if (Pathfinder.obstacles[i][0][0] == position[0] && Pathfinder.obstacles[i][1][0] == position[1])
 					return false;
 			}
 
 			// check that agent is not stepping out of the world
-			if (!((position[row] >= 0) && (position[row] <= SampleWorld.worldRows - 1) && (position[col] >= 0) && (position[col] <= SampleWorld.worldCols - 1)))
+			if (!((position[row] >= 0) && (position[row] <= Pathfinder.height - 1) && (position[col] >= 0) && (position[col] <= Pathfinder.width - 1)))
 				return false;
 
 			return true;
@@ -216,7 +219,7 @@ using UnityEngine;
 		}
 	}
 	// helper class for Node
-	class State
+	public class State
 	{
 		int[] agent;
 		int[][] samples;
@@ -237,9 +240,9 @@ using UnityEngine;
 
 		public bool inClosed()
 		{
-			for (int i = 0; i < SampleWorld.closed.size(); i++)
+			for (int i = 0; i < Pathfinder.closed.Count(); i++)
 			{
-				if (this.equals(SampleWorld.closed.get(i)))
+				if (this.equals(Pathfinder.closed[i]))
 				{
 					return true;
 				}

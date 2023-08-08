@@ -18,12 +18,6 @@ public class LogicGrid
     // Debug Grid Array used for updating the text-objects 
     private TextMesh[,] debugTextArray;
 
-
-    // Coordinates for pathfinding
-    public int[] agent;
-    public List<int[][]> obstacles;
-    public List<int[][]> samples;
-
     public event EventHandler<OnGridValueChangedEventArgs> OnGridValueChanged;
     public class OnGridValueChangedEventArgs : EventArgs
     {
@@ -103,46 +97,6 @@ public class LogicGrid
                     x = x,
                     y = y
                 });
-
-            // If deleting a cell's value, remove coord from set
-            if (value == 0)
-            {
-
-                // make behavior to check for -1 values in coords
-                if (agent[0].Equals(x) && agent[1].Equals(y))
-                {
-                    agent[0] = -1;
-                    agent[1] = -2;
-                }
-
-            }
-
-            // Add coordinate to obstacle array
-            if (value == 1)
-            {
-                int[][] coord = new int[2][];
-
-                coord[0][0] = x;
-                coord[1][0] = y;
-
-                obstacles.Add(coord);
-            }
-            // Add coordinate to sample array
-            if (value == 2)
-            {
-                int[][] coord = new int[2][];
-
-                coord[0][0] = x;
-                coord[1][0] = y;
-
-                samples.Add(coord);
-            }
-            // Add coordinate to obstacle array
-            if (value == 3)
-            {
-                agent[0] = x;
-                agent[1] = y;
-            }
         }
     }
 
@@ -182,10 +136,6 @@ public class LogicGrid
     public void reset()
     {
         gridArray = new int[width, height];
-
-        agent = new int[2];
-        obstacles = new List<int[][]>();
-        samples = new List<int[][]>();
 
         if (OnGridValueChanged != null)
             OnGridValueChanged(this, new OnGridValueChangedEventArgs

@@ -8,27 +8,29 @@ public class Main : MonoBehaviour
     [SerializeField] private CellMesh cellMesh;
     
     private LogicGrid world;
-    char placementMode;
     int placementValue;
-
 
     bool astarSelected;
 
+
+    // Coordinates for pathfinding
+    public Vector2 agent = new Vector2();
+    public List<Vector2> obstacles = new List<Vector2>();
+    public List<Vector2> samples = new List<Vector2>();
 
     // Start is called before the first frame update
     void Start()
     {
         // Create world
-        int width = 100;
-        int height = 100;
-        float cellSize = 5f;
-        Vector3 origin = new Vector3(-110, -110);
+        int width = 5;
+        int height = 5;
+        float cellSize = 10f;
+        Vector3 origin = new Vector3(-10, -10);
 
         world = new LogicGrid(width, height, cellSize, origin);
         
         // Set default placement to Obstacle
         placementValue = 1;
-        placementMode = 'o';
 
         cellMesh.SetGrid(world);
 
@@ -45,27 +47,29 @@ public class Main : MonoBehaviour
         if (Input.GetKeyDown("o"))
         {
             Debug.Log("Placing Mode: Obstacle");
-            placementMode = 'o';
             placementValue = 1;
         }
         // Place Sample in cell
         if(Input.GetKeyDown("s"))
         {
             Debug.Log("Placing Mode: Sample");
-            placementMode = 's';
             placementValue = 2;
         }
         // Place agent in cell
         if (Input.GetKeyDown("a"))
         {
             Debug.Log("Placing Mode: Agent");
-            placementMode = 'a';
             placementValue = 3;
         }
         // Reset Canvas
         if (Input.GetKeyDown("r"))
         {
             ResetGrid();
+        }
+
+        if (Input.GetKeyDown("g"))
+        {
+            StartAlgorithm();
         }
         //////////////////////////
         
@@ -107,9 +111,50 @@ public class Main : MonoBehaviour
    
     public void StartAlgorithm()
     {
-        if(astarSelected)
+        Vector2 coord = new Vector2();
+
+        // Collect information about world
+        for (int x = 0; x < world.GetWidth(); x++)
+            for(int y = 0; y < world.GetHeight(); y++)
+            {
+                int index = x * world.GetHeight() + y;
+                int value = world.GetValue(x, y);
+
+                Debug.Log("x: " + x + " y: " + y + " | value: " + value);
+
+                // Add coordinate to obstacle array
+                if (value == 1)
+                {
+                    //coord = new int[2][];
+
+                    coord.x = x;
+                    coord.y = y;
+
+                    if (!obstacles.Contains(coord))
+                        obstacles.Add(coord);
+                }
+                // Add coordinate to sample array
+                if (value == 2)
+                {
+                    //coord = new int[2][];
+
+                    coord.x = x;
+                    coord.y = y;
+
+                    samples.Add(coord);
+                }
+                // Add coordinate to obstacle array
+                if (value == 3)
+                {
+                    agent[0] = x;
+                    agent[1] = y;
+                }
+            }
+
+
+        if ( true )
         {
-            AStar astar = new AStar(world, 0);
+            Pathfinder astar = new Pathfinder(world, agent, obstacles, samples, 0, 0);
             astar.go();
         }
     }

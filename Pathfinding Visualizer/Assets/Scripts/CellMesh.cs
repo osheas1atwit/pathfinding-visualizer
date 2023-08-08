@@ -30,7 +30,7 @@ public class CellMesh : MonoBehaviour
     {
         // if(e.x == -1 && e.y == -1), grid is being reset
             
-        Debug.Log(e.x + " " + e.y);
+        //Debug.Log(e.x + " " + e.y);
         UpdateCellVisual();
     }
 
