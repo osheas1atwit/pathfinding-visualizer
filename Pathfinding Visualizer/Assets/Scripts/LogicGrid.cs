@@ -97,7 +97,6 @@ public class LogicGrid
                     x = x,
                     y = y
                 });
-            ;
         }
     }
 
@@ -132,5 +131,17 @@ public class LogicGrid
     public float GetCellSize()
     {
         return this.cellSize;
+    }
+
+    public void reset()
+    {
+        gridArray = new int[width, height];
+
+        if (OnGridValueChanged != null)
+            OnGridValueChanged(this, new OnGridValueChangedEventArgs
+            {
+                x = -1,
+                y = -1
+            });
     }
 }

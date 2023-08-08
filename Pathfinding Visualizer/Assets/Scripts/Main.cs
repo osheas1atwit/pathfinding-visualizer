@@ -57,7 +57,7 @@ public class Main : MonoBehaviour
         // Reset Canvas
         if (Input.GetKeyDown("r"))
         {
-
+            ResetGrid();
         }
 
 
@@ -88,11 +88,13 @@ public class Main : MonoBehaviour
     {
         placementValue = 2;
     }
-
     public void SetModeAgent()
     {
         placementValue = 3;
     }
-
+    public void ResetGrid()
+    {
+        world.reset();
+    }
 
 }

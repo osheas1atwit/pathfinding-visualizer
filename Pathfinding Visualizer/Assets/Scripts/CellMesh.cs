@@ -28,12 +28,14 @@ public class CellMesh : MonoBehaviour
 
     private void GridValueChanged(object sender, LogicGrid.OnGridValueChangedEventArgs e)
     {
+        // if(e.x == -1 && e.y == -1), grid is being reset
+            
         Debug.Log(e.x + " " + e.y);
         UpdateCellVisual();
     }
 
     // TODO: implement this so we can update a single cell, given an x, y coordinate
-    private void UpdateCellVisual(int x, int y)
+/*    private void UpdateCellVisual(int x, int y)
     {
         //Debug.Log("Updated in Isolation 8)");
         Vector3 quadSize = new Vector3(1, 1) * grid.GetCellSize();
@@ -45,13 +47,11 @@ public class CellMesh : MonoBehaviour
 
         MeshUtils.AddToMeshArrays(m_vertices, m_uv, m_triangles, index, grid.GetWorldPosition(x, y) + (quadSize * .5f), 0f, quadSize, gridValueUV, gridValueUV);
 
-    }
+    }*/
 
     // Update all cells at once
     private void UpdateCellVisual()
     {
-        Debug.Log("Updated as a group");
-
         MeshUtils.CreateEmptyMeshArrays(grid.GetWidth() * grid.GetHeight(), out Vector3[] vertices, out Vector2[] uv, out int[] triangles);
 
         for(int x = 0; x < grid.GetWidth(); x++)
