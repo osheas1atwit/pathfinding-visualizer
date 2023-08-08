@@ -7,6 +7,10 @@ public class CellMesh : MonoBehaviour
     private LogicGrid grid;
     private Mesh mesh;
 
+    Vector3[] m_vertices;
+    Vector2[] m_uv;
+    int[] m_triangles;
+
     private void Awake()
     {
         mesh = new Mesh();
@@ -24,12 +28,30 @@ public class CellMesh : MonoBehaviour
 
     private void GridValueChanged(object sender, LogicGrid.OnGridValueChangedEventArgs e)
     {
-        Debug.Log("FIRE!!");
+        Debug.Log(e.x + " " + e.y);
         UpdateCellVisual();
     }
 
+    // TODO: implement this so we can update a single cell, given an x, y coordinate
+    private void UpdateCellVisual(int x, int y)
+    {
+        //Debug.Log("Updated in Isolation 8)");
+        Vector3 quadSize = new Vector3(1, 1) * grid.GetCellSize();
+        int index = x * grid.GetHeight() + y;
+
+        int gridValue = grid.GetValue(x, y);
+        float gridValueNormalized = gridValue / 3f;
+        Vector2 gridValueUV = new Vector2(gridValueNormalized, 0f);
+
+        MeshUtils.AddToMeshArrays(m_vertices, m_uv, m_triangles, index, grid.GetWorldPosition(x, y) + (quadSize * .5f), 0f, quadSize, gridValueUV, gridValueUV);
+
+    }
+
+    // Update all cells at once
     private void UpdateCellVisual()
     {
+        Debug.Log("Updated as a group");
+
         MeshUtils.CreateEmptyMeshArrays(grid.GetWidth() * grid.GetHeight(), out Vector3[] vertices, out Vector2[] uv, out int[] triangles);
 
         for(int x = 0; x < grid.GetWidth(); x++)
@@ -40,12 +62,16 @@ public class CellMesh : MonoBehaviour
                 Vector3 quadSize = new Vector3(1, 1) * grid.GetCellSize();
 
                 int gridValue = grid.GetValue(x, y);
-                float gridValueNormalized = gridValue / 4f;
+                float gridValueNormalized = gridValue / 3f;
                 Vector2 gridValueUV = new Vector2(gridValueNormalized, 0f);
                 
                 
                 MeshUtils.AddToMeshArrays(vertices, uv, triangles, index, grid.GetWorldPosition(x, y) + (quadSize * .5f), 0f, quadSize, gridValueUV, gridValueUV);
             }
+
+        m_vertices = vertices;
+        m_uv = uv;
+        m_triangles = triangles;
 
         mesh.vertices = vertices;
         mesh.uv = uv;
@@ -57,52 +83,8 @@ public class CellMesh : MonoBehaviour
         
     }
 
-
-    /*                MeshRenderer myRenderer = GetComponent<MeshRenderer>();
-                Material m_material;
-                if (myRenderer != null)
-                {
-                    m_material = myRenderer.material;
-
-                    if(gridValue == -1)
-                    {
-                        m_material.color = Color.black; 
-                    }
-                    if (gridValue == 0)
-                    {
-                        m_material.color = Color.white;
-                    }
-                    if (gridValue == 1)
-                    {
-                        m_material.color = Color.green;
-                    }
-                    if (gridValue == 2)
-                    {
-                        m_material.color = Color.cyan;
-                    }*//*
-                }
-*/
     private void Update()
     {
-/*        if(Input.GetKeyDown("1"))
-        {
-            Debug.Log("1");
-            m_Material.color = Color.white;
-            //m_Material.SetColor("_Color", Color.white);
-        }
 
-        if (Input.GetKeyDown("2"))
-        {
-            Debug.Log("2");
-            m_Material.color = Color.black;
-            //m_Material.SetColor("_Color", Color.white);
-        }
-
-        if (Input.GetKeyDown("3"))
-        {
-            Debug.Log("3");
-            m_Material.color = Color.green;
-            //m_Material.SetColor("_Color", Color.white);
-        }*/
     }
 }
