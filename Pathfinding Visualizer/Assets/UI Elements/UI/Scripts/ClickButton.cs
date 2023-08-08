@@ -31,7 +31,7 @@ public class ClickButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     public void IWasClicked()
     {
-        Debug.Log("Clicked");
+        Debug.Log("Playing Simulation");
     }
 
 

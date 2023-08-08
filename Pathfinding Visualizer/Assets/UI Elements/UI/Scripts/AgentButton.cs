@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class WallsButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+public class AgentButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     [SerializeField] private Image _img;
     [SerializeField] private Sprite _default, _pressed;
@@ -29,7 +29,7 @@ public class WallsButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     public void IWasClicked()
     {
-        Debug.Log("Placing Mode: Obstacles");
+        Debug.Log("Placing Mode: Agent");
 
     }
 

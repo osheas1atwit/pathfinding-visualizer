@@ -4,17 +4,19 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class WallsButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+public class ResetButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
+
     [SerializeField] private Image _img;
     [SerializeField] private Sprite _default, _pressed;
-
+    [SerializeField] private AudioClip _compressClip, _uncompressClip;
+    [SerializeField] private AudioSource _source;
 
     public void OnPointerDown(PointerEventData eventData)
     {
 
         _img.sprite = _pressed;
-
+        _source.PlayOneShot(_compressClip);
 
     }
 
@@ -23,14 +25,14 @@ public class WallsButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
 
         _img.sprite = _default;
-
+        _source.PlayOneShot(_uncompressClip);
 
     }
 
     public void IWasClicked()
     {
-        Debug.Log("Placing Mode: Obstacles");
-
+        Debug.Log("Reseting World");
     }
+
 
 }
