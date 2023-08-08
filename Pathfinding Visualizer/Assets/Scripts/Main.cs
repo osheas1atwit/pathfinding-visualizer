@@ -33,11 +33,6 @@ public class Main : MonoBehaviour
 
     }
 
-    public void StartAStar()
-    {
-        AStar astar = new AStar(world, 0);
-    }
-
     // Update contains keyboard shortcut options
     void Update()
     {
@@ -90,6 +85,12 @@ public class Main : MonoBehaviour
 
     }
 
+    public void StartAStar()
+    {
+        AStar astar = new AStar(world, 0);
+    }
+
+
     public void SetModeObstacle()
     {
         placementValue = 1;
@@ -107,4 +108,6 @@ public class Main : MonoBehaviour
         world.reset();
     }
    
+
+
 }
