@@ -16,7 +16,12 @@ public class Main : MonoBehaviour
     void Start()
     {
         // Create world
-        world = new LogicGrid(100, 100, 5f, new Vector3(-110, -110));
+        int width = 100;
+        int height = 100;
+        float cellSize = 5f;
+        Vector3 origin = new Vector3(-110, -110);
+
+        world = new LogicGrid(width, height, cellSize, origin);
         
         // Set default placement to Obstacle
         placementValue = 1;
@@ -28,11 +33,16 @@ public class Main : MonoBehaviour
 
     }
 
-    // Update is called once per frame
+    public void StartAStar()
+    {
+        AStar astar = new AStar(world, 0);
+    }
+
+    // Update contains keyboard shortcut options
     void Update()
     {
-        // Change Placement Modes:
-
+        // Change Placement Mode Keyboard Shortcuts:
+        ////////////////////////////////
         // Place Obstacle in grid
         if (Input.GetKeyDown("o"))
         {
@@ -59,15 +69,16 @@ public class Main : MonoBehaviour
         {
             ResetGrid();
         }
-
+        //////////////////////////
+        
 
         // Update Cell:
-        // Change cell to obstacle
+        // Place value in cell based on selected placementValue with left click
         if (Input.GetMouseButton(0))
         {
             world.SetValue(CodeMonkey.Utils.UtilsClass.GetMouseWorldPosition(), placementValue);
         }
-        // Clear cell
+        // Clear cell with right click
         if (Input.GetMouseButton(1))
         {
             world.SetValue(CodeMonkey.Utils.UtilsClass.GetMouseWorldPosition(), 0);
@@ -78,7 +89,6 @@ public class Main : MonoBehaviour
             // and perform the selected algorithm
 
     }
-
 
     public void SetModeObstacle()
     {
@@ -96,5 +106,5 @@ public class Main : MonoBehaviour
     {
         world.reset();
     }
-
+   
 }
