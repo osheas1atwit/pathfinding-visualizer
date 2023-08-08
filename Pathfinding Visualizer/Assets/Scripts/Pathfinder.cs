@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Linq;
 
 
-public class Pathfinder : MonoBehaviour
+public class Pathfinder 
 {
 
     // used to store all unique states that agent has visited (holds agent and sample coords)
@@ -58,45 +58,53 @@ public class Pathfinder : MonoBehaviour
     public void StartWork()
     {
         Node initialState = new Node(null, agent, samples, '0', 0, 0);
-        Stack<Node> result = new Stack<Node>();
+        List<Node> result = new List<Node>();
 
         if (algorithm == 0)
         {
             result = StartAStar(initialState);
-
+            Debug.Log(" "); 
+            for(int i = 0; i < result.Count; i++)
+            {
+                Node n = result[i];
+                Debug.Log(n.lastMove);
+            }
         }
     }
 
-    public static Stack<Node> StartAStar(Node initialState)
+    public static List<Node> StartAStar(Node initialState)
     {
-        Stack<Node> solution = new Stack<Node>();
+        List<Node> solution = new List<Node>();
 
-        Queue<Node> open = new Queue<Node>();
+        List<Node> open = new List<Node>();
 
         
 
         //PriorityQueue<Node> open = new PriorityQueue<Node>();
 
-        open.Enqueue(initialState);
-        int cap = 10000;
+        open.Add(initialState);
+        int cap = 1000;
         while (true && cap > 0)
         {
             if (!open.Any())
                 return solution;
 
-            Node currentNode = open.Dequeue();
+            open = open.OrderBy(Node => Node.fn).ToList();
+
+            Node currentNode = open[0];
+            open.RemoveAt(0);
+
 
             // check whether we are in goal state
             if (currentNode.samples.Count() == 0)
             {
-
-                var orderedList = open.OrderBy(Node => Node.fn);
-
                 while (currentNode.parent != null)
                 {
-                    solution.Push(currentNode);
+                    Debug.Log("Agent at: " + currentNode.agent.x + ", " + currentNode.agent.y);
+                    solution.Add(currentNode);
                     currentNode = currentNode.parent;
                 }
+
                 return solution;
             }
 
@@ -112,12 +120,12 @@ public class Pathfinder : MonoBehaviour
 
             foreach (Node child in children)
             {
-                open.Enqueue(child);
+                open.Add(child);
             }
             cap--;
         }
 
-
+        return solution;
     }
     // HEURISTICS FOR ASTAR
     public static List<Node> h0(List<Node> children)

@@ -14,7 +14,7 @@ public class Main : MonoBehaviour
 
 
     // Coordinates for pathfinding
-    public Vector2Int agent = new Vector2Int();
+    public Vector2Int agent = new Vector2Int(-1, -1);
     public List<Vector2Int> obstacles = new List<Vector2Int>();
     public List<Vector2Int> samples = new List<Vector2Int>();
 
@@ -102,6 +102,9 @@ public class Main : MonoBehaviour
     public void ResetGrid()
     {
         world.reset();
+        agent = new Vector2Int(-1, -1);
+        obstacles = new List<Vector2Int>();
+        samples = new List<Vector2Int>();
     }
    
     public void StartAlgorithm()
@@ -115,7 +118,7 @@ public class Main : MonoBehaviour
                 int index = x * world.GetHeight() + y;
                 int value = world.GetValue(x, y);
 
-                Debug.Log("x: " + x + " y: " + y + " | value: " + value);
+                //Debug.Log("x: " + x + " y: " + y + " | value: " + value);
 
                 // Add coordinate to obstacle array
                 if (value == 1)
@@ -143,6 +146,18 @@ public class Main : MonoBehaviour
                 }
             }
 
+        if (agent.x == -1 && agent.y == -1)
+        {
+            Debug.Log("NO AGENT!");
+            return;
+        }
+
+        if (samples.Count == 0)
+        {
+            Debug.Log("NO SAMPLES!");
+            return;
+        }
+        
 
         if ( true )
         {
