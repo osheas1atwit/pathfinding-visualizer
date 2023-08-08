@@ -14,9 +14,9 @@ public class Main : MonoBehaviour
 
 
     // Coordinates for pathfinding
-    public Vector2 agent = new Vector2();
-    public List<Vector2> obstacles = new List<Vector2>();
-    public List<Vector2> samples = new List<Vector2>();
+    public Vector2Int agent = new Vector2Int();
+    public List<Vector2Int> obstacles = new List<Vector2Int>();
+    public List<Vector2Int> samples = new List<Vector2Int>();
 
     // Start is called before the first frame update
     void Start()
@@ -71,8 +71,8 @@ public class Main : MonoBehaviour
         {
             StartAlgorithm();
         }
+
         //////////////////////////
-        
 
         // Update Cell:
         // Place value in cell based on selected placementValue with left click
@@ -85,11 +85,6 @@ public class Main : MonoBehaviour
         {
             world.SetValue(CodeMonkey.Utils.UtilsClass.GetMouseWorldPosition(), 0);
         }
-
-        // Make functionality for when "start" button is pressed.
-            // should call some sort of function that will take in the world
-            // and perform the selected algorithm
-
     }
 
     public void SetModeObstacle()
@@ -111,7 +106,7 @@ public class Main : MonoBehaviour
    
     public void StartAlgorithm()
     {
-        Vector2 coord = new Vector2();
+        Vector2Int coord = new Vector2Int();
 
         // Collect information about world
         for (int x = 0; x < world.GetWidth(); x++)
@@ -125,8 +120,6 @@ public class Main : MonoBehaviour
                 // Add coordinate to obstacle array
                 if (value == 1)
                 {
-                    //coord = new int[2][];
-
                     coord.x = x;
                     coord.y = y;
 
@@ -136,18 +129,17 @@ public class Main : MonoBehaviour
                 // Add coordinate to sample array
                 if (value == 2)
                 {
-                    //coord = new int[2][];
-
                     coord.x = x;
                     coord.y = y;
 
-                    samples.Add(coord);
+                    if (!samples.Contains(coord))
+                        samples.Add(coord);
                 }
                 // Add coordinate to obstacle array
                 if (value == 3)
                 {
-                    agent[0] = x;
-                    agent[1] = y;
+                    agent.x = x;
+                    agent.y = y;
                 }
             }
 

@@ -11,8 +11,8 @@ using UnityEngine;
 		public static int col = 1;
 
 		Node parent;
-		int[] agent;
-		List<int[]> samples;
+		Vector2Int agent;
+		List<Vector2Int> samples;
 		char lastMove; // for output/animation
 		int distanceTraveled; // for calculating f(n) value
 		double heuristic;
@@ -20,11 +20,11 @@ using UnityEngine;
 		bool canSample; // for expansion 
 
 		// construct node :)
-		public Node(Node parent, int[] agent, List<int[]> samples, char lastMove, int distanceTraveled, double heuristic)
+		public Node(Node parent, Vector2Int agent, List<Vector2Int> samples, char lastMove, int distanceTraveled, double heuristic)
 		{
 			this.parent = parent;
 			this.agent = agent;
-			this.samples = new List<int[]>(samples);
+			this.samples = samples;
 			this.lastMove = lastMove;
 			this.distanceTraveled = distanceTraveled;
 			this.heuristic = heuristic;
@@ -40,7 +40,7 @@ using UnityEngine;
 
 			// document expansion of node and get ready to collect this node's children
 			// SampleWorld.expansions++;
-			int[] onSample = new int[2];
+			Vector2Int onSample = new Vector2Int();
 
 			// since this state is being currently visited (expanded), put in closed list
 			Pathfinder.closed.Add(this.getState());
@@ -50,10 +50,10 @@ using UnityEngine;
 			////////////////////////////////////
 
 			// store coordinates for all potential moves to be checked
-			int[] up = { this.agent[row] - 1, this.agent[col] };
-			int[] down = { this.agent[row] + 1, this.agent[col] };
-			int[] left = { this.agent[row], this.agent[col] - 1 };
-			int[] right = { this.agent[row], this.agent[col] + 1 };
+			Vector2Int up    = new Vector2Int( this.agent.y - 1, this.agent.x );
+			Vector2Int down  = new Vector2Int( this.agent.y + 1, this.agent.x );
+			Vector2Int left  = new Vector2Int( this.agent.y, this.agent.x - 1 );
+			Vector2Int right = new Vector2Int( this.agent.y, this.agent.x + 1 );
 
 			// make sure going up doesn't go outside world-bounds or into obstacle
 			if (isOpen(up))
@@ -97,12 +97,12 @@ using UnityEngine;
 
 			// CHECK IF CAN SAMPLE
 			onSample = CanSample();
-			if (onSample[0] == 1)
+			if (onSample.x == 1)
 			{
 				Node child = new Node(this, this.agent, this.samples, 'S', this.distanceTraveled + 1, this.heuristic);
 			
 				// PROBLEM?
-				child.samples.RemoveAt(onSample[1]);
+				child.samples.RemoveAt(onSample.y);
 
 				//SampleWorld.nodesGenerated++;
 				children.Add(child);
@@ -112,33 +112,29 @@ using UnityEngine;
 		}
 
 		// helper for expand, verifies whether potential move is legal
-		public bool isOpen(int[] position)
+		public bool isOpen(Vector2Int position)
 		{
 			// check that agent is not trying to move into an obstacle
 			for (int i = 0; i < Pathfinder.obstacles.Count(); i++)
 			{
-				int[] coord = new int[2];
-				coord[0] = Pathfinder.obstacles[i][0][0];
-				coord[1] = Pathfinder.obstacles[i][1][0];
-				if (Pathfinder.obstacles[i][0][0] == position[0] && Pathfinder.obstacles[i][1][0] == position[1])
+				if (Pathfinder.obstacles[i].x == position.x && Pathfinder.obstacles[i].y == position.y)
 					return false;
 			}
 
 			// check that agent is not stepping out of the world
-			if (!((position[row] >= 0) && (position[row] <= Pathfinder.height - 1) && (position[col] >= 0) && (position[col] <= Pathfinder.width - 1)))
+			if (!((position.y >= 0) && (position.y <= Pathfinder.height - 1) && (position.x >= 0) && (position.x <= Pathfinder.width - 1)))
 				return false;
 
 			return true;
 		}
 
 		// returns the coordinates of the sample closest to the agent's current location
-		public int[] nearestSample()
+		public Vector2Int nearestSample()
 		{
 			if (samples.Count == 0)
 				return agent;
 
-			// PROBLEM?
-			int[] s = samples[0];
+			Vector2Int s = samples[0];
 			double lowest = distance(agent, samples[0]);
 			double dist;
 
@@ -154,10 +150,10 @@ using UnityEngine;
 			return s;
 		}
 		// helper function for nearestSample()
-		public static double distance(int[] a, int[] b)
+		public static double distance(Vector2Int a, Vector2Int b)
 		{   //								 _________________________
 			// distance between 2D points = √(y2 - y1)^2 + (x2 - x1)^2
-			double total = (((b[row] - a[row]) * (b[row] - a[row])) + ((b[col] - a[col]) * (b[col] - a[col])));
+			double total = (((b.y - a.y) * (b.y - a.y)) + ((b.x - a.x) * (b.x - a.x)));
 			total = Math.Sqrt(total);
 
 			return total;
@@ -168,17 +164,16 @@ using UnityEngine;
 		// returns two pieces of information if true: 
 		// [0] is 1 to indicate agent can sample
 		// [1] is the index of the valid sample in the list
-		public int[] CanSample()
+		public Vector2Int CanSample()
 		{
 			// default to false
-			int[] result = new int[2];
-			result[0] = 0;
-			result[1] = -1;
+			Vector2Int result = new Vector2Int();
+			result.x = 0;
+			result.y = -1;
 
 			for (int i = 0; i < this.samples.Count; i++)
 			{
-				// PROBLEM?
-				if ((this.agent[row] == samples[i][row]) && (this.agent[col] == samples[i][col]))
+				if ((this.agent.y == samples[i].y) && (this.agent.x == samples[i].x))
 				{
 					result[0] = 1;
 					result[1] = i;
@@ -221,21 +216,19 @@ using UnityEngine;
 	// helper class for Node
 	public class State
 	{
-		int[] agent;
-		int[][] samples;
+		Vector2Int agent;
+		List<Vector2Int> samples;
 
-		public State(int[] agent, List<int[]> samples)
+		public State(Vector2Int agent, List<Vector2Int> samples)
 		{
-			// PROBLEM?
 			this.agent = agent;
-			this.samples = new int[samples.Count][];
+			this.samples = samples;
 
 			// convert List<int[]> into 2D array of ints [][]
-			for (int i = 0; i < samples.Count; i++)
+			/*for (int i = 0; i < samples.Count; i++)
 			{
-				// PROBLEM??
 				this.samples[i] = samples[i];
-			}
+			}*/
 		}
 
 		public bool inClosed()
@@ -252,21 +245,17 @@ using UnityEngine;
 
 		public bool equals(State other)
 		{
-			if (this.samples.Length != other.samples.Length)
+			if (this.samples.Count != other.samples.Count)
 				return false;
 
-			// PROBLEM?
-			if (!this.agent[0].Equals(other.agent[0]) && !this.agent[1].Equals(other.agent[1]))
+			if (!(this.agent.x.Equals(other.agent.x) && this.agent.y.Equals(other.agent.y)))
 				return false;
 
-			for (int i = 0; i < this.samples.Length; i++)
+			for (int i = 0; i < this.samples.Count; i++)
 			{
 				//if (Arrays.compare(this.samples[i], other.samples[i]) != 0)
 				
-				// PROBLEM?
-				if (!(this.samples.Rank == other.samples.Rank) &&
-					!(Enumerable.Range(0, this.samples.Rank).All(dimension => this.samples.GetLength(dimension) == other.samples.GetLength(dimension))) &&
-					!(this.samples.Cast<double>().SequenceEqual(other.samples.Cast<double>())))
+				if (this.samples.SequenceEqual(other.samples))
 					return false;
 			}
 

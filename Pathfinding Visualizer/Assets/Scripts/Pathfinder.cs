@@ -9,9 +9,9 @@ public class Pathfinder : MonoBehaviour
     public static List<State> closed = new List<State>();
 
     LogicGrid world;
-    public static int[] agent;
-    public static List<int[][]> obstacles;
-    public static List<int[][]> samples;
+    public static Vector2Int agent;
+    public static List<Vector2Int> obstacles;
+    public static List<Vector2Int> samples;
 
     public static int algorithm; // 0 = A* | 1 = dfs | 2 = bfs
     public static int heuristic; // 0 = h0 | 1 = h1  | 2 = h2
@@ -20,7 +20,7 @@ public class Pathfinder : MonoBehaviour
     public static int width;
 
 
-    public Pathfinder(LogicGrid world, int[] a, List<int[][]> o, List<int[][]> s, int algo, int heu)
+    public Pathfinder(LogicGrid world, Vector2Int a, List<Vector2Int> o, List<Vector2Int> s, int algo, int heu)
     {
         this.world = world;
         height = world.GetHeight();
@@ -41,12 +41,12 @@ public class Pathfinder : MonoBehaviour
 
         for(int i = 0; i < obstacles.Count; i++)
         {
-            Debug.Log("Obstacle " + i + ": " + obstacles[i][0][0] + ", " + obstacles[i][0][1]);
+            Debug.Log("Obstacle " + i + ": " + obstacles[i].x + ", " + obstacles[i].y);
         }
 
         for (int i = 0; i < samples.Count; i++)
         {
-            Debug.Log("Sample " + i + ": " + samples[i][0][0] + ", " + samples[i][0][1]);
+            Debug.Log("Sample " + i + ": " + samples[i].x + ", " + samples[i].y);
         }
 
     }
