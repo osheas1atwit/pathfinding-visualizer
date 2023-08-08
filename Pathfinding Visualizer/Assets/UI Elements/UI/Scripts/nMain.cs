@@ -10,6 +10,8 @@ public class nMain : MonoBehaviour
     private LogicGrid world;
     int placementValue;
 
+    public float speed = 3.0f;
+
     int algorithm;
     bool astarSelected;
     bool bfsSelected;
@@ -150,12 +152,16 @@ public class nMain : MonoBehaviour
         if (true)
         {
             Pathfinder astar = new Pathfinder(world, agent, obstacles, samples, algorithm, 0);
-            astar.go();
+
         }
     }
 
 
-
+    public void AdjustSpeed(float newSpeed)
+    {
+        speed = newSpeed;
+        Debug.Log(speed);
+    }
 
     public void AstarToggle(bool tickOn)
     {
