@@ -18,9 +18,8 @@ public class AStar : MonoBehaviour
         this.heuristic = heuristic;
     }
 
-    void Start()
+    public void go()
     {
-        
-    }
 
+    }
 }

@@ -12,6 +12,9 @@ public class Main : MonoBehaviour
     int placementValue;
 
 
+    bool astarSelected;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -85,12 +88,6 @@ public class Main : MonoBehaviour
 
     }
 
-    public void StartAStar()
-    {
-        AStar astar = new AStar(world, 0);
-    }
-
-
     public void SetModeObstacle()
     {
         placementValue = 1;
@@ -108,6 +105,13 @@ public class Main : MonoBehaviour
         world.reset();
     }
    
-
+    public void StartAlgorithm()
+    {
+        if(astarSelected)
+        {
+            AStar astar = new AStar(world, 0);
+            astar.go();
+        }
+    }
 
 }
