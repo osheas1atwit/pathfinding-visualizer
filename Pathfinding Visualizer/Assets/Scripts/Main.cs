@@ -146,8 +146,7 @@ public class Main : MonoBehaviour
 
         if ( true )
         {
-            Pathfinder astar = new Pathfinder(world, agent, obstacles, samples, 0, 0);
-            astar.go();
+            Pathfinder path = new Pathfinder(world, agent, obstacles, samples, 0, 0);
         }
     }
 

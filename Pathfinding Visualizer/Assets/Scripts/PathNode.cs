@@ -4,19 +4,19 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-	class Node : IComparable<Node>
+	public class Node //: IComparable<Node>
 	{
 		// helper variables just to make indexing arrays easier to read
 		public static int row = 0;
 		public static int col = 1;
 
-		Node parent;
-		Vector2Int agent;
-		List<Vector2Int> samples;
-		char lastMove; // for output/animation
-		int distanceTraveled; // for calculating f(n) value
-		double heuristic;
-		public double fn; // distance traveled + heuristic value
+		public Node parent;
+		public Vector2Int agent;
+		public List<Vector2Int> samples;
+		public char lastMove; // for output/animation
+		public int distanceTraveled; // for calculating f(n) value
+		public double heuristic;
+		public static double fn; // distance traveled + heuristic value
 		bool canSample; // for expansion 
 
 		// construct node :)
@@ -28,7 +28,7 @@ using UnityEngine;
 			this.lastMove = lastMove;
 			this.distanceTraveled = distanceTraveled;
 			this.heuristic = heuristic;
-			this.fn = distanceTraveled + heuristic;
+			fn = distanceTraveled + heuristic;
 		}
 
 		// determine valid moves and collect children to be sent back to search
@@ -101,7 +101,6 @@ using UnityEngine;
 			{
 				Node child = new Node(this, this.agent, this.samples, 'S', this.distanceTraveled + 1, this.heuristic);
 			
-				// PROBLEM?
 				child.samples.RemoveAt(onSample.y);
 
 				//SampleWorld.nodesGenerated++;
@@ -191,18 +190,18 @@ using UnityEngine;
 		}
 
 		// we use to override comparisons for priorityQueues so that our heuristic calculations are actually used
-		public int CompareTo(Node other)
+/*		public int CompareTo(Node other)
 		{
 			if (this.fn > other.fn)
-			return 1;
+				return 1;
 			else
-			return -1;
-		}
+				return -1;
+		}*/
 	
 	}
 
 	// helper class for Node
-	class NodeComparator : Comparer<Node>
+/*	class NodeComparator : Comparer<Node>
 	{
 		// used to sort nodes based on sum of distance traveled + heuristic estimation of work left
 		public override int Compare(Node a, Node b)
@@ -212,7 +211,7 @@ using UnityEngine;
 			else
 			return -1;
 		}
-	}
+	}*/
 	// helper class for Node
 	public class State
 	{
