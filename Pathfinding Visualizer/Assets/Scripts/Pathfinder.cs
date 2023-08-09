@@ -74,7 +74,12 @@ public class Pathfinder
         {
 			result = StartDFS(initialState, -1);
         }
-    }
+		// Run IDS
+		if (algorithm == 2)
+		{
+			result = StartIDS(initialState);
+		}
+	}
 
     public static Stack<Node> StartAStar(Node initialState, int heuristic)
     {
@@ -117,7 +122,7 @@ public class Pathfinder
             List<Node> children = currentNode.expand(-1);
 
             if (heuristic == 0)
-                h2(children);
+                h0(children);
             else if (heuristic == 1)
                 h1(children);
             else if (heuristic == 2)
@@ -203,7 +208,7 @@ public class Pathfinder
 		List<Node> open = new List<Node>();
 		open.Add(initialState);
 
-		int cap = 100000;
+		int cap = 90000;
 		while (true && cap > 0)
 		{
 			// if open is empty, we have exhausted all of our options and there is no solution
@@ -211,6 +216,7 @@ public class Pathfinder
 				return solution;
 
 			Node currentNode = open[0];
+			open.RemoveAt(0);
 
 			// check if agent is in goal state
 			if (currentNode.samples.Count == 0)
@@ -234,7 +240,7 @@ public class Pathfinder
 		Debug.Log("Too much work :(");
 		return solution;
 	}
-	public static Stack<Node> ids(Node initialState)
+	public static Stack<Node> StartIDS(Node initialState)
 	{
 		Debug.Log("RUNNING IDS");
 		Stack<Node> result = new Stack<Node>();

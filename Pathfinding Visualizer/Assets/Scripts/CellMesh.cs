@@ -84,7 +84,7 @@ public class CellMesh : MonoBehaviour
         for (int i = 0; i < count; i++)
         {
             Node n = result.Pop();
-            Debug.Log("Agent at: " + n.agent.x + ", " + n.agent.y);
+            //Debug.Log("Agent at: " + n.agent.x + ", " + n.agent.y);
             Debug.Log(n.lastMove);
 
             grid.SetValue(n.agent.x, n.agent.y, 3);
