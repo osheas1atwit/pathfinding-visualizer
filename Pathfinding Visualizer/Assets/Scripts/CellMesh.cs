@@ -78,6 +78,24 @@ public class CellMesh : MonoBehaviour
         mesh.triangles = triangles;
     }
 
+    public void Animate(Stack<Node> result)
+    {
+        int count = result.Count;
+        for (int i = 0; i < count; i++)
+        {
+            Node n = result.Pop();
+            Debug.Log("Agent at: " + n.agent.x + ", " + n.agent.y);
+            Debug.Log(n.lastMove);
+
+            grid.SetValue(n.agent.x, n.agent.y, 3);
+            //grid.SetValue(n.parent.agent.x, n.parent.agent.y, 0);
+
+            UpdateCellVisual();
+
+        }
+    }
+
+
     void Start()
     {
         

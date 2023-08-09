@@ -21,12 +21,12 @@ public class Pathfinder
     public static int height;
     public static int width;
 
-    public static Stack<Node> result;
+    public Stack<Node> result;
 
 
     public Pathfinder(LogicGrid world, Vector2Int a, List<Vector2Int> o, List<Vector2Int> s, int algo, int heu)
     {
-        this.world = world;
+		this.world = world;
         height = world.GetHeight();
         width = world.GetWidth();
 
@@ -38,9 +38,6 @@ public class Pathfinder
         heuristic = heu;
 
         //printInfo();
-
-
-        
 
         StartWork();
 
@@ -69,21 +66,14 @@ public class Pathfinder
         if (algorithm == 0)
         {
             result = StartAStar(initialState);
-            Debug.Log(" ");
-
-            int count = result.Count;
-            for(int i = 0; i < count; i++)
-            {
-                Node n = result.Pop();
-                Debug.Log("Agent at: " + n.agent.x + ", " + n.agent.y);
-                Debug.Log(n.lastMove);
-            }
         }
     }
 
     public static Stack<Node> StartAStar(Node initialState)
     {
-        Stack<Node> solution = new Stack<Node>();
+		Debug.Log("GO!");
+
+		Stack<Node> solution = new Stack<Node>();
 
         List<Node> open = new List<Node>();
 
@@ -105,6 +95,7 @@ public class Pathfinder
             if (currentNode.samples.Count() == 0)
             {
                 Debug.Log("Gottem");
+				
 
                 //Node n = FindLastSample(open);
                 
@@ -299,7 +290,6 @@ public class Node
 			onSample = CanSample();
 			if (onSample.x == 1)
 			{
-				Debug.Log("SAMPLING");
 				Node child = new Node(this, this.agent, this.samples, 'S', this.distanceTraveled + 1, this.heuristic);
 			
 				child.samples.RemoveAt(onSample.y);

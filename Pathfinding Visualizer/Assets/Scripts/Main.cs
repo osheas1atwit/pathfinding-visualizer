@@ -102,14 +102,16 @@ public class Main : MonoBehaviour
     public void ResetGrid()
     {
         world.reset();
-        agent = new Vector2Int(-1, -1);
+        agent = new Vector2Int();
         obstacles = new List<Vector2Int>();
         samples = new List<Vector2Int>();
     }
    
     public void StartAlgorithm()
     {
+        
         Vector2Int coord = new Vector2Int();
+        bool agentFound = false;
 
         // Collect information about world
         for (int x = 0; x < world.GetWidth(); x++)
@@ -138,15 +140,16 @@ public class Main : MonoBehaviour
                     if (!samples.Contains(coord))
                         samples.Add(coord);
                 }
-                // Add coordinate to obstacle array
+                // Add coordinate to agent array
                 if (value == 3)
                 {
                     agent.x = x;
                     agent.y = y;
+                    agentFound = true;
                 }
             }
 
-        if (agent.x == -1 && agent.y == -1)
+        if (!agentFound)
         {
             Debug.Log("NO AGENT!");
             return;
@@ -157,11 +160,12 @@ public class Main : MonoBehaviour
             Debug.Log("NO SAMPLES!");
             return;
         }
-        
 
         if ( true )
         {
             Pathfinder path = new Pathfinder(world, agent, obstacles, samples, 0, 0);
+            Stack<Node> result = path.result;
+            cellMesh.Animate(result);
         }
     }
 
