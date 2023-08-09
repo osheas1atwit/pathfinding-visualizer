@@ -28,9 +28,9 @@ public class nMain : MonoBehaviour
     void Start()
     {
         // Create world
-        int width = 16;
-        int height = 8;
-        float cellSize = 10f;
+        int width = 32;
+        int height = 16;
+        float cellSize = 5f;
         Vector3 origin = new Vector3(-77, -34);
 
         world = new LogicGrid(width, height, cellSize, origin);

@@ -8,7 +8,7 @@ public class Pathfinder
 {
 
     // used to store all unique states that agent has visited (holds agent and sample coords)
-    public static HashSet<State> closed = new HashSet<State>();
+    public static HashSet<string> closed = new HashSet<string>();
 
     LogicGrid world;
     public Vector2Int agent;
@@ -26,7 +26,7 @@ public class Pathfinder
 
     public Pathfinder(LogicGrid world, Vector2Int a, HashSet<Vector2Int> o, HashSet<Vector2Int> s, int algo, int heu)
     {
-		closed = new HashSet<State>();
+		closed = new HashSet<string>();
 
 		this.world = world;
         height = world.GetHeight();
@@ -299,7 +299,7 @@ public class Node
 			Vector2Int onSample = new Vector2Int();
 
 			// since this state is being currently visited (expanded), put in closed list
-			Pathfinder.closed.Add(this.getState());
+			Pathfinder.closed.Add(this.getStateString());
 
 			////////////////////////////////////
 			// BEGIN CHECKING FOR VALID MOVES //
@@ -319,7 +319,7 @@ public class Node
 				//SampleWorld.nodesGenerated++;
 
 				// make sure that we have not already made that move
-				if (!Pathfinder.closed.Contains(child.getState()))
+				if (!Pathfinder.closed.Contains(child.getStateString()))
 					children.Add(child);
 			}
 
@@ -329,7 +329,7 @@ public class Node
 				Node child = new Node(this, down, this.obstacles, this.samples, 'D', this.distanceTraveled + 1, this.heuristic);
 				//SampleWorld.nodesGenerated++;
 
-				if (!Pathfinder.closed.Contains(child.getState()))
+				if (!Pathfinder.closed.Contains(child.getStateString()))
 					children.Add(child);
 			}
 
@@ -338,7 +338,7 @@ public class Node
 				Node child = new Node(this, left, this.obstacles, this.samples, 'L', this.distanceTraveled + 1, this.heuristic);
 				//SampleWorld.nodesGenerated++;
 
-				if (!Pathfinder.closed.Contains(child.getState()))
+				if (!Pathfinder.closed.Contains(child.getStateString()))
 					children.Add(child);
 		}
 
@@ -347,7 +347,7 @@ public class Node
 				Node child = new Node(this, right, this.obstacles, this.samples, 'R', this.distanceTraveled + 1, this.heuristic);
 				//SampleWorld.nodesGenerated++;
 
-				if (!Pathfinder.closed.Contains(child.getState()))
+				if (!Pathfinder.closed.Contains(child.getStateString()))
 					children.Add(child);
 		}
 
