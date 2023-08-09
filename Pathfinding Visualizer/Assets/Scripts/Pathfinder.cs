@@ -208,7 +208,7 @@ public class Pathfinder
 
         dfsStack.Push(initialState);
 
-        int cap = 90000;
+        int cap = 2000000;
         while (dfsStack.Count > 0 && cap > 0)
         {
             Node currentNode = dfsStack.Pop();
