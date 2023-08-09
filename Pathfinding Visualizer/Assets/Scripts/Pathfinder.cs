@@ -8,7 +8,7 @@ public class Pathfinder
 {
 
     // used to store all unique states that agent has visited (holds agent and sample coords)
-    public static List<State> closed = new List<State>();
+    public static HashSet<State> closed = new HashSet<State>();
 
     LogicGrid world;
     public Vector2Int agent;
@@ -26,7 +26,7 @@ public class Pathfinder
 
     public Pathfinder(LogicGrid world, Vector2Int a, List<Vector2Int> o, List<Vector2Int> s, int algo, int heu)
     {
-		closed = new List<State>();
+		closed = new HashSet<State>();
 
 		this.world = world;
         height = world.GetHeight();
@@ -80,7 +80,7 @@ public class Pathfinder
 		Debug.Log("GO!");
 
 		open.Add(initialState);
-        int cap = 2000;
+        int cap = 20000;
         while (true && cap > 0)
         {
             if (!open.Any())
@@ -88,10 +88,10 @@ public class Pathfinder
 				return solution;
 			}
 
-            open = open.OrderBy(Node => Node.fn).ToList();
+			//open = open.OrderBy(Node => Node.fn).ToList();
 
-            Node currentNode = open[0];
-            open.RemoveAt(0);
+			Node currentNode = FindBestNode(open);
+            open.Remove(currentNode);
 
 
             // check whether we are in goal state
@@ -126,6 +126,17 @@ public class Pathfinder
         }
 		Debug.Log("too much work :(");
         return solution;
+    }
+
+	public static Node FindBestNode(List<Node> open)
+    {
+		Node lowest = open[0];
+		for(int i = 1; i < open.Count; i++)
+        {
+			if (open[i].fn < lowest.fn)
+				lowest = open[i];
+        }
+		return lowest;
     }
 
     // HEURISTICS FOR ASTAR
@@ -172,9 +183,9 @@ public class Pathfinder
             // estimated moves left: 
             // distance to nearest sample + 1 (+1 to account for sample action)
             child = children[i];
-            child.heuristic = Node.distance(child.agent, child.nearestSample()) + 1;
+			child.heuristic = Vector2.Distance(child.agent, child.nearestSample()) + 1;
 
-            sorted.Add(child);
+			sorted.Add(child);
         }
 
         return sorted;
@@ -244,7 +255,7 @@ public class Node
 				//SampleWorld.nodesGenerated++;
 
 				// make sure that we have not already made that move
-				if (!child.getState().inClosed())
+				if (!Pathfinder.closed.Contains(child.getState()))
 					children.Add(child);
 			}
 
@@ -254,7 +265,7 @@ public class Node
 				Node child = new Node(this, down, this.obstacles, this.samples, 'D', this.distanceTraveled + 1, this.heuristic);
 				//SampleWorld.nodesGenerated++;
 
-				if (!child.getState().inClosed())
+				if (!Pathfinder.closed.Contains(child.getState()))
 					children.Add(child);
 			}
 
@@ -263,18 +274,18 @@ public class Node
 				Node child = new Node(this, left, this.obstacles, this.samples, 'L', this.distanceTraveled + 1, this.heuristic);
 				//SampleWorld.nodesGenerated++;
 
-				if (!child.getState().inClosed())
+				if (!Pathfinder.closed.Contains(child.getState()))
 					children.Add(child);
-			}
+		}
 
 			if (isOpen(right))
 			{
 				Node child = new Node(this, right, this.obstacles, this.samples, 'R', this.distanceTraveled + 1, this.heuristic);
 				//SampleWorld.nodesGenerated++;
 
-				if (!child.getState().inClosed())
-				children.Add(child);
-			}
+				if (!Pathfinder.closed.Contains(child.getState()))
+					children.Add(child);
+		}
 
 			// CHECK IF CAN SAMPLE
 			onSample = CanSample();
@@ -318,12 +329,12 @@ public class Node
 				return agent;
 
 			Vector2Int s = samples[0];
-			double lowest = distance(agent, samples[0]);
+			double lowest = Vector2.Distance(agent, samples[0]);
 			double dist;
 
 			for (int i = 1; i < samples.Count; i++)
 			{
-				dist = distance(agent, samples[i]);
+				dist = Vector2.Distance(agent, samples[i]);
 				if (dist < lowest)
 				{
 					lowest = dist;
@@ -333,14 +344,14 @@ public class Node
 			return s;
 		}
 		// helper function for nearestSample()
-		public static double distance(Vector2Int a, Vector2Int b)
+/*		public static double distance(Vector2Int a, Vector2Int b)
 		{   //								 _________________________
 			// distance between 2D points = √(y2 - y1)^2 + (x2 - x1)^2
 			double total = (((b.y - a.y) * (b.y - a.y)) + ((b.x - a.x) * (b.x - a.x)));
 			total = Math.Sqrt(total);
 
 			return total;
-		}
+		}*/
 
 		// helper function for h2
 		/////////////////////////////
@@ -412,18 +423,6 @@ public class Node
 			{
 				this.samples[i] = samples[i];
 			}*/
-		}
-
-		public bool inClosed()
-		{
-			for (int i = 0; i < Pathfinder.closed.Count(); i++)
-			{
-				if (this.equals(Pathfinder.closed[i]))
-				{
-					return true;
-				}
-			}
-			return false;
 		}
 
 		public bool equals(State other)
