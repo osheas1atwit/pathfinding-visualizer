@@ -50,10 +50,10 @@ using UnityEngine;
 			////////////////////////////////////
 
 			// store coordinates for all potential moves to be checked
-			Vector2Int up    = new Vector2Int( this.agent.y + 1, this.agent.x );
-			Vector2Int down  = new Vector2Int( this.agent.y - 1, this.agent.x );
-			Vector2Int left  = new Vector2Int( this.agent.y, this.agent.x - 1 );
-			Vector2Int right = new Vector2Int( this.agent.y, this.agent.x + 1 );
+			Vector2Int up    = new Vector2Int( this.agent.x, this.agent.y + 1 );
+			Vector2Int down  = new Vector2Int( this.agent.x, this.agent.y - 1 );
+			Vector2Int left  = new Vector2Int( this.agent.x - 1,  this.agent.y );
+			Vector2Int right = new Vector2Int( this.agent.x + 1,  this.agent.y);
 
 			// make sure going up doesn't go outside world-bounds or into obstacle
 			if (isOpen(up))

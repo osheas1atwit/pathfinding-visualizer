@@ -21,6 +21,8 @@ public class Pathfinder
     public static int height;
     public static int width;
 
+    public Stack<Node> result;
+
 
     public Pathfinder(LogicGrid world, Vector2Int a, List<Vector2Int> o, List<Vector2Int> s, int algo, int heu)
     {
@@ -58,25 +60,27 @@ public class Pathfinder
     public void StartWork()
     {
         Node initialState = new Node(null, agent, samples, '0', 0, 0);
-        List<Node> result = new List<Node>();
+        result = new Stack<Node>();
 
         // Run AStar
         if (algorithm == 0)
         {
             result = StartAStar(initialState);
-            Debug.Log(" "); 
-            for(int i = 0; i < result.Count; i++)
+            Debug.Log(" ");
+
+            int count = result.Count;
+            for(int i = 0; i < count; i++)
             {
-                Node n = result[i];
+                Node n = result.Pop();
                 Debug.Log("Agent at: " + n.agent.x + ", " + n.agent.y);
                 Debug.Log(n.lastMove);
             }
         }
     }
 
-    public static List<Node> StartAStar(Node initialState)
+    public static Stack<Node> StartAStar(Node initialState)
     {
-        List<Node> solution = new List<Node>();
+        Stack<Node> solution = new Stack<Node>();
 
         List<Node> open = new List<Node>();
 
@@ -100,7 +104,7 @@ public class Pathfinder
                 Debug.Log("Gottem");
                 while (currentNode.parent != null)
                 {
-                    solution.Add(currentNode);
+                    solution.Push(currentNode);
                     currentNode = currentNode.parent;
                 }
 
