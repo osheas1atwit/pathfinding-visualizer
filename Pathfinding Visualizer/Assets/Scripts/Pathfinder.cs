@@ -11,12 +11,12 @@ public class Pathfinder
     public static List<State> closed = new List<State>();
 
     LogicGrid world;
-    public static Vector2Int agent;
-    public static List<Vector2Int> obstacles;
-    public static List<Vector2Int> samples;
+    public Vector2Int agent;
+    public List<Vector2Int> obstacles;
+    public List<Vector2Int> samples;
 
-    public static int algorithm; // 0 = A* | 1 = dfs | 2 = bfs
-    public static int heuristic; // 0 = h0 | 1 = h1  | 2 = h2
+    public int algorithm; // 0 = A* | 1 = dfs | 2 = bfs
+    public int heuristic; // 0 = h0 | 1 = h1  | 2 = h2
 
     public static int height;
     public static int width;
@@ -26,6 +26,8 @@ public class Pathfinder
 
     public Pathfinder(LogicGrid world, Vector2Int a, List<Vector2Int> o, List<Vector2Int> s, int algo, int heu)
     {
+		closed = new List<State>();
+
 		this.world = world;
         height = world.GetHeight();
         width = world.GetWidth();
@@ -59,31 +61,32 @@ public class Pathfinder
 
     public void StartWork()
     {
-        Node initialState = new Node(null, agent, samples, '0', 0, 0);
+        Node initialState = new Node(null, agent, obstacles, samples, '0', 0, 0);
         result = new Stack<Node>();
 
         // Run AStar
         if (algorithm == 0)
         {
-            result = StartAStar(initialState);
+            result = StartAStar(initialState, heuristic);
         }
     }
 
-    public static Stack<Node> StartAStar(Node initialState)
+    public static Stack<Node> StartAStar(Node initialState, int heuristic)
     {
-		Debug.Log("GO!");
-
 		Stack<Node> solution = new Stack<Node>();
 
         List<Node> open = new List<Node>();
 
-        
-        open.Add(initialState);
+		Debug.Log("GO!");
+
+		open.Add(initialState);
         int cap = 1000;
         while (true && cap > 0)
         {
             if (!open.Any())
-                return solution;
+			{
+				return solution;
+			}
 
             open = open.OrderBy(Node => Node.fn).ToList();
 
@@ -201,7 +204,9 @@ public class Node
 		public static int col = 1;
 
 		public Node parent;
+
 		public Vector2Int agent;
+		public List<Vector2Int> obstacles;
 		public List<Vector2Int> samples;
 
 		public char lastMove; // for output/animation
@@ -211,10 +216,11 @@ public class Node
 		//bool canSample; // for expansion 
 
 		// construct node :)
-		public Node(Node parent, Vector2Int agent, List<Vector2Int> samples, char lastMove, int distanceTraveled, double heuristic)
+		public Node(Node parent, Vector2Int agent, List<Vector2Int> obstacles, List<Vector2Int> samples, char lastMove, int distanceTraveled, double heuristic)
 		{
 			this.parent = parent;
 			this.agent = agent;
+			this.obstacles = new List<Vector2Int>(obstacles);
 			this.samples = new List<Vector2Int>(samples);
 			this.lastMove = lastMove;
 			this.distanceTraveled = distanceTraveled;
@@ -250,7 +256,7 @@ public class Node
 			if (isOpen(up))
 			{
 				// if move is valid, create that new node/state and document
-				Node child = new Node(this, up, this.samples, 'U', this.distanceTraveled + 1, this.heuristic);
+				Node child = new Node(this, up, this.obstacles, this.samples, 'U', this.distanceTraveled + 1, this.heuristic);
 				//SampleWorld.nodesGenerated++;
 
 				// make sure that we have not already made that move
@@ -261,7 +267,7 @@ public class Node
 			// same idea but for the different potential moves
 			if (isOpen(down))
 			{
-				Node child = new Node(this, down, this.samples, 'D', this.distanceTraveled + 1, this.heuristic);
+				Node child = new Node(this, down, this.obstacles, this.samples, 'D', this.distanceTraveled + 1, this.heuristic);
 				//SampleWorld.nodesGenerated++;
 
 				if (!child.getState().inClosed())
@@ -270,7 +276,7 @@ public class Node
 
 			if (isOpen(left))
 			{
-				Node child = new Node(this, left, this.samples, 'L', this.distanceTraveled + 1, this.heuristic);
+				Node child = new Node(this, left, this.obstacles, this.samples, 'L', this.distanceTraveled + 1, this.heuristic);
 				//SampleWorld.nodesGenerated++;
 
 				if (!child.getState().inClosed())
@@ -279,7 +285,7 @@ public class Node
 
 			if (isOpen(right))
 			{
-				Node child = new Node(this, right, this.samples, 'R', this.distanceTraveled + 1, this.heuristic);
+				Node child = new Node(this, right, this.obstacles, this.samples, 'R', this.distanceTraveled + 1, this.heuristic);
 				//SampleWorld.nodesGenerated++;
 
 				if (!child.getState().inClosed())
@@ -290,7 +296,7 @@ public class Node
 			onSample = CanSample();
 			if (onSample.x == 1)
 			{
-				Node child = new Node(this, this.agent, this.samples, 'S', this.distanceTraveled + 1, this.heuristic);
+				Node child = new Node(this, this.agent, this.obstacles, this.samples, 'S', this.distanceTraveled + 1, this.heuristic);
 			
 				child.samples.RemoveAt(onSample.y);
 
@@ -305,9 +311,9 @@ public class Node
 		public bool isOpen(Vector2Int position)
 		{
 			// check that agent is not trying to move into an obstacle
-			for (int i = 0; i < Pathfinder.obstacles.Count(); i++)
+			for (int i = 0; i < obstacles.Count(); i++)
 			{
-				if (Pathfinder.obstacles[i].x.Equals(position.x) && Pathfinder.obstacles[i].y.Equals(position.y))
+				if (obstacles[i].x.Equals(position.x) && obstacles[i].y.Equals(position.y))
 					return false;
 			}
 
