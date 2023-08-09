@@ -22,8 +22,8 @@ public class Main : MonoBehaviour
     void Start()
     {
         // Create world
-        int width = 5;
-        int height = 5;
+        int width = 4;
+        int height = 4;
         float cellSize = 10f;
         Vector3 origin = new Vector3(-10, -10);
 

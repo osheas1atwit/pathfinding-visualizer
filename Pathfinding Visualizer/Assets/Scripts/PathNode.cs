@@ -1,10 +1,10 @@
-﻿using System;
+﻿/*using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-	public class Node //: IComparable<Node>
+	public class Node
 	{
 		// helper variables just to make indexing arrays easier to read
 		public static int row = 0;
@@ -13,6 +13,7 @@ using UnityEngine;
 		public Node parent;
 		public Vector2Int agent;
 		public List<Vector2Int> samples;
+
 		public char lastMove; // for output/animation
 		public int distanceTraveled; // for calculating f(n) value
 		public double heuristic;
@@ -194,18 +195,18 @@ using UnityEngine;
 		}
 
 		// we use to override comparisons for priorityQueues so that our heuristic calculations are actually used
-/*		public int CompareTo(Node other)
+*//*		public int CompareTo(Node other)
 		{
 			if (this.fn > other.fn)
 				return 1;
 			else
 				return -1;
-		}*/
+		}*//*
 	
 	}
 
 	// helper class for Node
-/*	class NodeComparator : Comparer<Node>
+*//*	class NodeComparator : Comparer<Node>
 	{
 		// used to sort nodes based on sum of distance traveled + heuristic estimation of work left
 		public override int Compare(Node a, Node b)
@@ -215,7 +216,7 @@ using UnityEngine;
 			else
 			return -1;
 		}
-	}*/
+	}*//*
 	// helper class for Node
 	public class State
 	{
@@ -228,10 +229,10 @@ using UnityEngine;
 			this.samples = samples;
 
 			// convert List<int[]> into 2D array of ints [][]
-			/*for (int i = 0; i < samples.Count; i++)
+			*//*for (int i = 0; i < samples.Count; i++)
 			{
 				this.samples[i] = samples[i];
-			}*/
+			}*//*
 		}
 
 		public bool inClosed()
@@ -264,4 +265,4 @@ using UnityEngine;
 
 			return true;
 		}
-	}
+	}*/
