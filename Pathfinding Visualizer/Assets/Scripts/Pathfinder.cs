@@ -80,7 +80,7 @@ public class Pathfinder
 		Debug.Log("GO!");
 
 		open.Add(initialState);
-        int cap = 1000;
+        int cap = 2000;
         while (true && cap > 0)
         {
             if (!open.Any())
@@ -99,9 +99,6 @@ public class Pathfinder
             {
                 Debug.Log("Gottem");
 				
-
-                //Node n = FindLastSample(open);
-                
                 while (currentNode.parent != null)
                 {
                     solution.Push(currentNode);
@@ -115,10 +112,10 @@ public class Pathfinder
             List<Node> children = currentNode.expand(-1);
 
             if (heuristic == 0)
-                h0(children);
-           /* else if (heuristic.Equals("h1"))
+                h2(children);/*
+            else if (heuristic == 1)
                 h1(children);
-            else if (heuristic.Equals("h2"))
+            else if (heuristic == 2)
                 h2(children);*/
 
             foreach (Node child in children)
@@ -127,22 +124,9 @@ public class Pathfinder
             }
             cap--;
         }
-
+		Debug.Log("too much work :(");
         return solution;
     }
-
-/*    private Node GetLowestNode(List<Node> NodeList)
-    {
-        Node lowest = NodeList[0];
-        for (int i = 1; i < NodeList.Count; i++)
-        {
-            if (NodeList[i].fn < lowest.fn)
-            {
-                lowest = NodeList[i];
-            }
-        }
-        return lowest;
-    }*/
 
     // HEURISTICS FOR ASTAR
     public static List<Node> h0(List<Node> children)
@@ -161,40 +145,40 @@ public class Pathfinder
         return sorted;
     }
 
-/*    public static List<Node> h1(List<Node> children)
+    public static List<Node> h1(List<Node> children)
     {
-        Queue<Node> sorted = new PriorityQueue<>(new NodeComparator());
+		List<Node> sorted = new List<Node>();
 
-        for (int i = 0; i < children.size(); i++)
+		for (int i = 0; i < children.Count; i++)
         {
             // estimated moves left: samples left
-            children.get(i).heuristic = children.get(i).samples.size();
-            sorted.add(children.get(i));
+            children[i].heuristic = children[i].samples.Count;
+            sorted.Add(children[i]);
         }
         return children;
     }
 
-    public static Queue<Node> h2(List<Node> children)
+    public static List<Node> h2(List<Node> children)
     {
-        Queue<Node> sorted = new PriorityQueue<>(new NodeComparator());
+        List<Node> sorted = new List<Node>();
 
-        if (children.size() == 0)
+        if (children.Count() == 0)
             return sorted;
 
         Node child;
 
-        for (int i = 0; i < children.size(); i++)
+        for (int i = 0; i < children.Count(); i++)
         {
             // estimated moves left: 
             // distance to nearest sample + 1 (+1 to account for sample action)
-            child = children.get(i);
+            child = children[i];
             child.heuristic = Node.distance(child.agent, child.nearestSample()) + 1;
 
-            sorted.add(child);
+            sorted.Add(child);
         }
 
         return sorted;
-    }*/
+    }
 }
 
 public class Node

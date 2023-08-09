@@ -27,9 +27,9 @@ public class nMain : MonoBehaviour
     void Start()
     {
         // Create world
-        int width = 32;
-        int height = 16;
-        float cellSize = 5f;
+        int width = 16;
+        int height = 8;
+        float cellSize = 10f;
         Vector3 origin = new Vector3(-77, -34);
 
         world = new LogicGrid(width, height, cellSize, origin);
@@ -107,11 +107,15 @@ public class nMain : MonoBehaviour
     public void ResetGrid()
     {
         world.reset();
+        agent = new Vector2Int();
+        obstacles = new List<Vector2Int>();
+        samples = new List<Vector2Int>();
     }
 
     public void StartAlgorithm()
     {
         Vector2Int coord = new Vector2Int();
+        bool agentFound = false;
 
         // Collect information about world
         for (int x = 0; x < world.GetWidth(); x++)
@@ -120,7 +124,7 @@ public class nMain : MonoBehaviour
                 int index = x * world.GetHeight() + y;
                 int value = world.GetValue(x, y);
 
-                Debug.Log("x: " + x + " y: " + y + " | value: " + value);
+                //Debug.Log("x: " + x + " y: " + y + " | value: " + value);
 
                 // Add coordinate to obstacle array
                 if (value == 1)
@@ -140,18 +144,33 @@ public class nMain : MonoBehaviour
                     if (!samples.Contains(coord))
                         samples.Add(coord);
                 }
-                // Add coordinate to obstacle array
+                // Add coordinate to agent array
                 if (value == 3)
                 {
                     agent.x = x;
                     agent.y = y;
+                    agentFound = true;
                 }
             }
 
+        if (!agentFound)
+        {
+            Debug.Log("NO AGENT!");
+            return;
+        }
+
+        if (samples.Count == 0)
+        {
+            Debug.Log("NO SAMPLES!");
+            return;
+        }
 
         if (true)
         {
-            Pathfinder astar = new Pathfinder(world, agent, obstacles, samples, algorithm, 0);
+            Pathfinder path = new Pathfinder(world, agent, obstacles, samples, 0, 0);
+            Stack<Node> result = path.result;
+            Debug.Log("GO ANIMATE");
+            cellMesh.Animate(result);
         }
     }
 
