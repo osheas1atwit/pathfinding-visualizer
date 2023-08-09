@@ -69,6 +69,11 @@ public class Pathfinder
         {
             result = StartAStar(initialState, heuristic);
         }
+		// Run DFS
+		if (algorithm == 1)
+        {
+			result = StartDFS(initialState, -1);
+        }
     }
 
     public static Stack<Node> StartAStar(Node initialState, int heuristic)
@@ -76,10 +81,10 @@ public class Pathfinder
 		Stack<Node> solution = new Stack<Node>();
 
         List<Node> open = new List<Node>();
+		open.Add(initialState);
 
 		Debug.Log("GO!");
 
-		open.Add(initialState);
         int cap = 200000;
         while (true && cap > 0)
         {
@@ -95,7 +100,7 @@ public class Pathfinder
 
 
             // check whether we are in goal state
-            if (currentNode.samples.Count() == 0)
+            if (currentNode.samples.Count == 0)
             {
                 Debug.Log("Gottem");
 				
@@ -112,11 +117,11 @@ public class Pathfinder
             List<Node> children = currentNode.expand(-1);
 
             if (heuristic == 0)
-                h2(children);/*
+                h2(children);
             else if (heuristic == 1)
                 h1(children);
             else if (heuristic == 2)
-                h2(children);*/
+                h2(children);
 
             foreach (Node child in children)
             {
@@ -187,6 +192,63 @@ public class Pathfinder
 
         return children;
     }
+
+	// ALTERNATE SEARCH ALGORITHMS
+	public static Stack<Node> StartDFS(Node initialState, int depth)
+	{
+		Debug.Log("DOING DFS");
+		Stack<Node> solution = new Stack<Node>();
+		
+		// used to store nodes not visited (generated but not expanded)
+		List<Node> open = new List<Node>();
+		open.Add(initialState);
+
+		int cap = 100000;
+		while (true && cap > 0)
+		{
+			// if open is empty, we have exhausted all of our options and there is no solution
+			if (!open.Any())
+				return solution;
+
+			Node currentNode = open[0];
+
+			// check if agent is in goal state
+			if (currentNode.samples.Count == 0)
+			{
+				while (currentNode.parent != null)
+				{
+					solution.Push(currentNode);
+					currentNode = currentNode.parent;
+				}
+				return solution;
+			}
+
+			// otherwise, expand and continue down path
+			List<Node> children = currentNode.expand(depth);
+			foreach (Node child in children)
+			{
+				open.Add(child);
+			}
+			cap--;
+		}
+		Debug.Log("Too much work :(");
+		return solution;
+	}
+	public static Stack<Node> ids(Node initialState)
+	{
+		Debug.Log("RUNNING IDS");
+		Stack<Node> result = new Stack<Node>();
+		int depth = 1;
+
+		while (true)
+		{
+			result = StartDFS(initialState, depth);
+			if (result.Count != 0)
+				return result;
+			depth++;
+			closed.Clear();
+		}
+	}
 }
 
 public class Node
