@@ -201,45 +201,44 @@ public class Pathfinder
 	// ALTERNATE SEARCH ALGORITHMS
 	public static Stack<Node> StartDFS(Node initialState, int depth)
 	{
-		Debug.Log("DOING DFS");
-		Stack<Node> solution = new Stack<Node>();
-		
-		// used to store nodes not visited (generated but not expanded)
-		List<Node> open = new List<Node>();
-		open.Add(initialState);
+        Debug.Log("DOING DFS");
+        Stack<Node> solution = new Stack<Node>();
+        Stack<Node> dfsStack = new Stack<Node>();  // Stack for DFS
+        HashSet<string> visited = new HashSet<string>();  // For avoiding revisiting states
 
-		int cap = 90000;
-		while (true && cap > 0)
-		{
-			// if open is empty, we have exhausted all of our options and there is no solution
-			if (!open.Any())
-				return solution;
+        dfsStack.Push(initialState);
 
-			Node currentNode = open[0];
-			open.RemoveAt(0);
+        int cap = 90000;
+        while (dfsStack.Count > 0 && cap > 0)
+        {
+            Node currentNode = dfsStack.Pop();
 
-			// check if agent is in goal state
-			if (currentNode.samples.Count == 0)
-			{
-				while (currentNode.parent != null)
-				{
-					solution.Push(currentNode);
-					currentNode = currentNode.parent;
-				}
-				return solution;
-			}
+            // If we have already visited this state, skip processing
+            if (visited.Contains(currentNode.getStateString())) continue;
+            visited.Add(currentNode.getStateString());
 
-			// otherwise, expand and continue down path
-			List<Node> children = currentNode.expand(depth);
-			foreach (Node child in children)
-			{
-				open.Add(child);
-			}
-			cap--;
-		}
-		Debug.Log("Too much work :(");
-		return solution;
-	}
+            // check if agent is in goal state
+            if (currentNode.samples.Count == 0)
+            {
+                while (currentNode.parent != null)
+                {
+                    solution.Push(currentNode);
+                    currentNode = currentNode.parent;
+                }
+                return solution;
+            }
+
+            List<Node> children = currentNode.expand(-1);
+            foreach (Node child in children)
+            {
+                dfsStack.Push(child);
+            }
+            cap--;
+        }
+
+        Debug.Log("Too much work :(");
+        return solution;
+    }
 	public static Stack<Node> StartIDS(Node initialState)
 	{
 		Debug.Log("RUNNING IDS");
@@ -371,7 +370,7 @@ public class Node
 		public bool isOpen(Vector2Int position)
 		{
 			// check that agent is not trying to move into an obstacle
-			if (obstacles.Contains(agent))
+			if (obstacles.Contains(position))
 				return false;
 
 			if ((position.y < 0) || (position.y > Pathfinder.height - 1) || (position.x < 0) || (position.x > Pathfinder.width - 1))
@@ -467,16 +466,26 @@ public class Node
 			return new State(this.agent, this.samples);
 		}
 
-		// we use to override comparisons for priorityQueues so that our heuristic calculations are actually used
-/*		public int CompareTo(Node other)
-		{
-			if (this.fn > other.fn)
-				return 1;
-			else
-				return -1;
-		}*/
-	
-	}
+        public string getStateString()
+        {
+            string stateStr = agent.ToString();
+            foreach (var obstacle in obstacles)
+                stateStr += obstacle.ToString();
+            foreach (var sample in samples)
+                stateStr += sample.ToString();
+            return stateStr;
+        }
+
+    // we use to override comparisons for priorityQueues so that our heuristic calculations are actually used
+    /*		public int CompareTo(Node other)
+            {
+                if (this.fn > other.fn)
+                    return 1;
+                else
+                    return -1;
+            }*/
+
+}
 
 	// helper class for Node
 /*	class NodeComparator : Comparer<Node>
