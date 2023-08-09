@@ -15,8 +15,8 @@ public class Main : MonoBehaviour
 
     // Coordinates for pathfinding
     public Vector2Int agent = new Vector2Int(-1, -1);
-    public List<Vector2Int> obstacles = new List<Vector2Int>();
-    public List<Vector2Int> samples = new List<Vector2Int>();
+    public HashSet<Vector2Int> obstacles = new HashSet<Vector2Int>();
+    public HashSet<Vector2Int> samples = new HashSet<Vector2Int>();
 
     // Start is called before the first frame update
     void Start()
@@ -103,8 +103,8 @@ public class Main : MonoBehaviour
     {
         world.reset();
         agent = new Vector2Int();
-        obstacles = new List<Vector2Int>();
-        samples = new List<Vector2Int>();
+        obstacles = new HashSet<Vector2Int>();
+        samples = new HashSet<Vector2Int>();
     }
    
     public void StartAlgorithm()

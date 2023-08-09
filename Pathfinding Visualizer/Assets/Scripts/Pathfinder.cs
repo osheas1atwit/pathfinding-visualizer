@@ -12,8 +12,8 @@ public class Pathfinder
 
     LogicGrid world;
     public Vector2Int agent;
-    public List<Vector2Int> obstacles;
-    public List<Vector2Int> samples;
+    public HashSet<Vector2Int> obstacles;
+    public HashSet<Vector2Int> samples;
 
     public int algorithm; // 0 = A* | 1 = dfs | 2 = bfs
     public int heuristic; // 0 = h0 | 1 = h1  | 2 = h2
@@ -24,7 +24,7 @@ public class Pathfinder
     public Stack<Node> result;
 
 
-    public Pathfinder(LogicGrid world, Vector2Int a, List<Vector2Int> o, List<Vector2Int> s, int algo, int heu)
+    public Pathfinder(LogicGrid world, Vector2Int a, HashSet<Vector2Int> o, HashSet<Vector2Int> s, int algo, int heu)
     {
 		closed = new HashSet<State>();
 
@@ -44,7 +44,7 @@ public class Pathfinder
         StartWork();
 
     }
-    public void printInfo()
+/*   public void printInfo()
     {
         Debug.Log("Agent: " + agent[0] + "," + agent[1]);
 
@@ -57,7 +57,7 @@ public class Pathfinder
         {
             Debug.Log("Sample " + i + ": " + samples[i].x + ", " + samples[i].y);
         }
-    }
+    }*/
 
     public void StartWork()
     {
@@ -80,7 +80,7 @@ public class Pathfinder
 		Debug.Log("GO!");
 
 		open.Add(initialState);
-        int cap = 20000;
+        int cap = 200000;
         while (true && cap > 0)
         {
             if (!open.Any())
@@ -171,10 +171,8 @@ public class Pathfinder
 
     public static List<Node> h2(List<Node> children)
     {
-        List<Node> sorted = new List<Node>();
-
         if (children.Count() == 0)
-            return sorted;
+            return children;
 
         Node child;
 
@@ -185,10 +183,9 @@ public class Pathfinder
             child = children[i];
 			child.heuristic = Vector2.Distance(child.agent, child.nearestSample()) + 1;
 
-			sorted.Add(child);
         }
 
-        return sorted;
+        return children;
     }
 }
 
@@ -201,8 +198,8 @@ public class Node
 		public Node parent;
 
 		public Vector2Int agent;
-		public List<Vector2Int> obstacles;
-		public List<Vector2Int> samples;
+		public HashSet<Vector2Int> obstacles;
+		public HashSet<Vector2Int> samples;
 
 		public char lastMove; // for output/animation
 		public int distanceTraveled; // for calculating f(n) value
@@ -211,12 +208,12 @@ public class Node
 		//bool canSample; // for expansion 
 
 		// construct node :)
-		public Node(Node parent, Vector2Int agent, List<Vector2Int> obstacles, List<Vector2Int> samples, char lastMove, int distanceTraveled, double heuristic)
+		public Node(Node parent, Vector2Int agent, HashSet<Vector2Int> obstacles, HashSet<Vector2Int> samples, char lastMove, int distanceTraveled, double heuristic)
 		{
 			this.parent = parent;
 			this.agent = agent;
-			this.obstacles = new List<Vector2Int>(obstacles);
-			this.samples = new List<Vector2Int>(samples);
+			this.obstacles = new HashSet<Vector2Int>(obstacles);
+			this.samples = new HashSet<Vector2Int>(samples);
 			this.lastMove = lastMove;
 			this.distanceTraveled = distanceTraveled;
 			this.heuristic = heuristic;
@@ -289,11 +286,11 @@ public class Node
 
 			// CHECK IF CAN SAMPLE
 			onSample = CanSample();
-			if (onSample.x == 1)
+			if (onSample.x != -1)
 			{
 				Node child = new Node(this, this.agent, this.obstacles, this.samples, 'S', this.distanceTraveled + 1, this.heuristic);
 			
-				child.samples.RemoveAt(onSample.y);
+				child.samples.Remove(onSample);
 
 				//SampleWorld.nodesGenerated++;
 				children.Add(child);
@@ -306,11 +303,8 @@ public class Node
 		public bool isOpen(Vector2Int position)
 		{
 			// check that agent is not trying to move into an obstacle
-			for (int i = 0; i < obstacles.Count(); i++)
-			{
-				if (obstacles[i].x.Equals(position.x) && obstacles[i].y.Equals(position.y))
-					return false;
-			}
+			if (obstacles.Contains(agent))
+				return false;
 
 			if ((position.y < 0) || (position.y > Pathfinder.height - 1) || (position.x < 0) || (position.x > Pathfinder.width - 1))
 				return false;
@@ -325,9 +319,24 @@ public class Node
 		// returns the coordinates of the sample closest to the agent's current location
 		public Vector2Int nearestSample()
 		{
+			Vector2Int s = new Vector2Int(-1, -1);
 			if (samples.Count == 0)
 				return agent;
 
+			double lowest = 9999999;
+			double dist = 0;
+
+			foreach (Vector2Int sample in samples)
+			{
+				dist = Vector2Int.Distance(agent, sample);
+				if(dist < lowest)
+				{
+					lowest = dist;
+					s = sample;
+				}				
+			}
+			return s;
+/*
 			Vector2Int s = samples[0];
 			double lowest = Vector2.Distance(agent, samples[0]);
 			double dist;
@@ -341,7 +350,7 @@ public class Node
 					s = samples[i];
 				}
 			}
-			return s;
+			return s;*/
 		}
 		// helper function for nearestSample()
 /*		public static double distance(Vector2Int a, Vector2Int b)
@@ -362,9 +371,15 @@ public class Node
 		{
 			// default to false
 			Vector2Int result = new Vector2Int();
-			result.x = 0;
+			result.x = -1;
 			result.y = -1;
 
+			if(samples.Contains(agent))
+				result = agent;
+		
+			return result;
+			
+			/*
 			for (int i = 0; i < this.samples.Count; i++)
 			{
 				if ((this.agent.y == samples[i].y) && (this.agent.x == samples[i].x))
@@ -374,7 +389,7 @@ public class Node
 					return result;
 				}
 			}
-			return result;
+			return result;*/
 		}
 
 		// returns only the dynamic information directly related to the Node's state.
@@ -411,9 +426,9 @@ public class Node
 	public class State
 	{
 		Vector2Int agent;
-		List<Vector2Int> samples;
+		HashSet<Vector2Int> samples;
 
-		public State(Vector2Int agent, List<Vector2Int> samples)
+		public State(Vector2Int agent, HashSet<Vector2Int> samples)
 		{
 			this.agent = agent;
 			this.samples = samples;
