@@ -746,7 +746,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cellMesh: {fileID: 885170986}
-  speed: 3
   agent: {x: 0, y: 0}
 --- !u!1 &254496291
 GameObject:
@@ -1778,7 +1777,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 3.00
+  m_text: 2.00
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6199a8d09f6d80b44afa2ad06a271be7, type: 2}
   m_sharedMaterial: {fileID: -3238282194751116107, guid: 6199a8d09f6d80b44afa2ad06a271be7, type: 2}
@@ -3263,9 +3262,9 @@ MonoBehaviour:
   m_HandleRect: {fileID: 368052878}
   m_Direction: 1
   m_MinValue: 0.01
-  m_MaxValue: 5
+  m_MaxValue: 2
   m_WholeNumbers: 0
-  m_Value: 3
+  m_Value: 2
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
