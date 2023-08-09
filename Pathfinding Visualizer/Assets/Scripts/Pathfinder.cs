@@ -60,6 +60,7 @@ public class Pathfinder
         Node initialState = new Node(null, agent, samples, '0', 0, 0);
         List<Node> result = new List<Node>();
 
+        // Run AStar
         if (algorithm == 0)
         {
             result = StartAStar(initialState);
@@ -96,6 +97,7 @@ public class Pathfinder
             // check whether we are in goal state
             if (currentNode.samples.Count() == 0)
             {
+                Debug.Log("Gottem");
                 while (currentNode.parent != null)
                 {
                     solution.Add(currentNode);
@@ -108,7 +110,7 @@ public class Pathfinder
             // if not, expand children and continue
             List<Node> children = currentNode.expand(-1);
 
-            if (heuristic.Equals("h0"))
+            if (heuristic == 0)
                 h0(children);
            /* else if (heuristic.Equals("h1"))
                 h1(children);
@@ -124,6 +126,20 @@ public class Pathfinder
 
         return solution;
     }
+
+/*    private Node GetLowestNode(List<Node> NodeList)
+    {
+        Node lowest = NodeList[0];
+        for (int i = 1; i < NodeList.Count; i++)
+        {
+            if (NodeList[i].fn < lowest.fn)
+            {
+                lowest = NodeList[i];
+            }
+        }
+        return lowest;
+    }*/
+
     // HEURISTICS FOR ASTAR
     public static List<Node> h0(List<Node> children)
     {

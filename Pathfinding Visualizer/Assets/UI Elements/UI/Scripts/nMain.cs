@@ -150,7 +150,6 @@ public class nMain : MonoBehaviour
         if (true)
         {
             Pathfinder astar = new Pathfinder(world, agent, obstacles, samples, algorithm, 0);
-            astar.go();
         }
     }
 

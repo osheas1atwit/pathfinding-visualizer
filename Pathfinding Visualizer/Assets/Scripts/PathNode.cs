@@ -16,8 +16,8 @@ using UnityEngine;
 		public char lastMove; // for output/animation
 		public int distanceTraveled; // for calculating f(n) value
 		public double heuristic;
-		public static double fn; // distance traveled + heuristic value
-		bool canSample; // for expansion 
+		public double fn; // distance traveled + heuristic value
+		//bool canSample; // for expansion 
 
 		// construct node :)
 		public Node(Node parent, Vector2Int agent, List<Vector2Int> samples, char lastMove, int distanceTraveled, double heuristic)
@@ -50,8 +50,8 @@ using UnityEngine;
 			////////////////////////////////////
 
 			// store coordinates for all potential moves to be checked
-			Vector2Int up    = new Vector2Int( this.agent.y - 1, this.agent.x );
-			Vector2Int down  = new Vector2Int( this.agent.y + 1, this.agent.x );
+			Vector2Int up    = new Vector2Int( this.agent.y + 1, this.agent.x );
+			Vector2Int down  = new Vector2Int( this.agent.y - 1, this.agent.x );
 			Vector2Int left  = new Vector2Int( this.agent.y, this.agent.x - 1 );
 			Vector2Int right = new Vector2Int( this.agent.y, this.agent.x + 1 );
 
@@ -117,13 +117,16 @@ using UnityEngine;
 			// check that agent is not trying to move into an obstacle
 			for (int i = 0; i < Pathfinder.obstacles.Count(); i++)
 			{
-				if (Pathfinder.obstacles[i].x == position.x && Pathfinder.obstacles[i].y == position.y)
+				if (Pathfinder.obstacles[i].x.Equals(position.x) && Pathfinder.obstacles[i].y.Equals(position.y))
 					return false;
 			}
 
-			// check that agent is not stepping out of the world
-			if (!((position.y >= 0) && (position.y <= Pathfinder.height - 1) && (position.x >= 0) && (position.x <= Pathfinder.width - 1)))
+			if ((position.y < 0) || (position.y > Pathfinder.height - 1) || (position.x < 0) || (position.x > Pathfinder.width - 1))
 				return false;
+
+			// check that agent is not stepping out of the world
+			// if (!((position.y >= 0) && (position.y <= Pathfinder.height - 1) && (position.x >= 0) && (position.x <= Pathfinder.width - 1)))
+			//	return false;
 
 			return true;
 		}
