@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class CellMesh : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class CellMesh : MonoBehaviour
     Vector3[] m_vertices;
     Vector2[] m_uv;
     int[] m_triangles;
+
+    Stack<Node> animateData;
 
     private void Awake()
     {
@@ -78,23 +81,31 @@ public class CellMesh : MonoBehaviour
         mesh.triangles = triangles;
     }
 
+
     public void Animate(Stack<Node> result)
     {
-        int count = result.Count;
+        animateData = result;
+        StartCoroutine("AnimateGrid");
+    }
+
+
+    IEnumerator AnimateGrid()
+    {
+        int count = animateData.Count;
         for (int i = 0; i < count; i++)
         {
-            Node n = result.Pop();
+            Node n = animateData.Pop();
             //Debug.Log("Agent at: " + n.agent.x + ", " + n.agent.y);
             Debug.Log(n.lastMove);
 
             grid.SetValue(n.agent.x, n.agent.y, 3);
-            //grid.SetValue(n.parent.agent.x, n.parent.agent.y, 0);
+            grid.SetValue(n.parent.agent.x, n.parent.agent.y, 0);
+
+            yield return new WaitForSeconds(nMain.speed);
 
             UpdateCellVisual();
-
         }
     }
-
 
     void Start()
     {

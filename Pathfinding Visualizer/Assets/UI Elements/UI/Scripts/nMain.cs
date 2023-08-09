@@ -10,7 +10,7 @@ public class nMain : MonoBehaviour
     private LogicGrid world;
     int placementValue;
 
-    public float speed = 3.0f;
+    public static float speed = 3.0f;
 
     int heuristic;
     int algorithm;
