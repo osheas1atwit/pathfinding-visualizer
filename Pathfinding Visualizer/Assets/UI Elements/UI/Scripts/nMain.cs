@@ -15,7 +15,7 @@ public class nMain : MonoBehaviour
     int heuristic;
     int algorithm;
     bool astarSelected;
-    bool bfsSelected;
+    bool idsSelected;
     bool dfsSelected;
 
 
@@ -199,10 +199,10 @@ public class nMain : MonoBehaviour
         Debug.Log(algorithm);
     }
 
-    public void BFSToggle(bool tickOn)
+    public void IDSToggle(bool tickOn)
     {
-        bfsSelected = tickOn;
-        Debug.Log(bfsSelected);
+        idsSelected = tickOn;
+        Debug.Log(idsSelected);
         algorithm = 2;
         Debug.Log(algorithm);
 
