@@ -12,6 +12,7 @@ public class nMain : MonoBehaviour
 
     public float speed = 3.0f;
 
+    int heuristic;
     int algorithm;
     bool astarSelected;
     bool bfsSelected;
@@ -167,7 +168,7 @@ public class nMain : MonoBehaviour
 
         if (true)
         {
-            Pathfinder path = new Pathfinder(world, agent, obstacles, samples, 0, 0);
+            Pathfinder path = new Pathfinder(world, agent, obstacles, samples, algorithm, heuristic);
             Stack<Node> result = path.result;
             Debug.Log("GO ANIMATE");
             cellMesh.Animate(result);
@@ -204,6 +205,28 @@ public class nMain : MonoBehaviour
         Debug.Log(bfsSelected);
         algorithm = 2;
         Debug.Log(algorithm);
+
+    }
+
+    public void h0Toggle(bool tickOn)
+    {
+        
+        heuristic = 0;
+        Debug.Log(heuristic);
+
+    }
+
+    public void h1Toggle(bool tickOn)
+    {
+        heuristic = 1;
+        Debug.Log(heuristic);
+    }
+
+    public void h2Toggle(bool tickOn)
+    {
+        
+        heuristic = 2;
+        Debug.Log(heuristic);
 
     }
 
